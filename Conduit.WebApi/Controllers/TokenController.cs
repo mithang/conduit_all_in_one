@@ -61,13 +61,14 @@ namespace Conduit.WebApi.Controllers
             {
                 var gelenUser = await _tokenServices.GetUserAsync(user.UserName);
                 //Muốn trả về gì khi đăng nhập
-                return new ObjectResult(new { userId = gelenUser.Id, userName = gelenUser.UserName, token = GenerateToken(gelenUser) });
+                var tuple = GenerateToken(gelenUser);
+                return new ObjectResult(new { userId = gelenUser.Id, userName = gelenUser.UserName, token = tuple.Item1, expires =tuple.Item2});
             }
             return Unauthorized();
         }
 
 
-        private string GenerateToken(Domain.User user)
+        private Tuple<string, string> GenerateToken(Domain.User user)
         {
             //Claim là thự viện đính kèm sẳn trong MVC Core
             //Thông tin cần mã hóa trong payload: UniqueName,NameId,Email,Role
@@ -89,8 +90,8 @@ namespace Conduit.WebApi.Controllers
                 expires: DateTime.Now.AddMinutes((double)Convert.ChangeType(Configuration["JwtTokenConfig:TokenLifeTime"], typeof(double))),//
                 signingCredentials: new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256)
                 );
-            
-            return new JwtSecurityTokenHandler().WriteToken(token);
+
+            return new Tuple<string, string>(new JwtSecurityTokenHandler().WriteToken(token), token.ValidTo.ToString());
         }
 
 
