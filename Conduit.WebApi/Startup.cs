@@ -12,6 +12,9 @@ using Conduit.Data.EntityFramework;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
+using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -70,6 +73,23 @@ namespace Conduit.WebApi
             services.AddScoped<IArticleFavoriteServices, EfArticleFavoriteManager>();
             services.AddScoped<ICommentSercices, EfCommentManager>();
             services.AddScoped<INoteServices, EfNoteManager>();
+
+
+            services.AddScoped<ILibraryRepository, LibraryRepository>();
+
+            services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
+
+            services.AddScoped<IUrlHelper>(implementationFactory =>
+            {
+                var actionContext = implementationFactory.GetService<IActionContextAccessor>()
+                    .ActionContext;
+                return new UrlHelper(actionContext);
+            });
+
+            services.AddTransient<IPropertyMappingService, PropertyMappingService>();
+
+            services.AddTransient<ITypeHelperService, TypeHelperService>();
+
             services.AddSingleton<IConfiguration>(Configuration);
             services.AddSingleton(mapper); //Mapping Dependency
             services.AddMvc()
@@ -133,6 +153,9 @@ namespace Conduit.WebApi
             {
                 app.UseDeveloperExceptionPage();
             }
+
+            //Đảm bảo db sẽ được tạo trước khi dùng
+            context.EnsureSeedDataForContext();
 
             //Dùng Cors với tên AllowAll
             app.UseCors("AllowAll");
