@@ -22,7 +22,7 @@ namespace Conduit.WebApi.Controllers
             _noteSercices = noteSercices;
         }
         [HttpGet("ListNote")]
-        [Authorize]
+        //[Authorize]
         public async Task<List<Note>> GetNoteAsync()
         {
             return await _noteSercices.GetNoteList();
@@ -54,7 +54,7 @@ namespace Conduit.WebApi.Controllers
         [HttpPut]
         public async Task<IActionResult> PutAsync([FromBody]Note note)
         {
-            //Model is valid mi yapılıcak...
+            //Model họp lệ
             if (ModelState.IsValid)
             {
                 var durum = await _noteSercices.UpdateAsync(note);
@@ -66,6 +66,16 @@ namespace Conduit.WebApi.Controllers
             }
             return BadRequest(ModelState);
         }
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteAsync(int id)
+        {
 
+            var durum = await _noteSercices.DeleteAsync(id);
+            if (durum.Errors != null)
+            {
+                return Ok(durum);
+            }
+            return BadRequest(durum);
+        }
     }
 }

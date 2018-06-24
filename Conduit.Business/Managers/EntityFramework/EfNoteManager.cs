@@ -38,6 +38,7 @@ namespace Conduit.Business.Managers.EntityFramework
         public async Task<ResultMessage<Note>> GetNoteAsync(int id)
         {
             ResultMessage<Note> resultMessage = new ResultMessage<Note>();
+            //Đầu vào của Get là một Expression
             var user = await Get(p => p.Id == id);
             if (user != null)
             {
@@ -92,5 +93,27 @@ namespace Conduit.Business.Managers.EntityFramework
             //}
 
         }
+        public async Task<ResultMessage<Note>> DeleteAsync(int id)
+        {
+            ResultMessage<Note> resultMessage = new ResultMessage<Note>();
+            var user = await Get(p => p.Id == id);
+            if (user == null)
+            {
+                resultMessage.Errors = new ErrorMessageObj(ErrorMessageCode.NoteNotFound, "İlgili kullanıcı bulunamadı.");
+                return resultMessage;
+            }
+            var sonuc = await base.Delete(user);
+            if (sonuc > 0)
+            {
+                resultMessage.Result = null;
+            }
+            else
+            {
+                resultMessage.Errors = new ErrorMessageObj(ErrorMessageCode.NoteCouldNotDeleted, "Kullanıcı silinemedi.");
+            }
+            return resultMessage;
+        }
+
+      
     }
 }

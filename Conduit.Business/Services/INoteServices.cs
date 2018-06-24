@@ -14,10 +14,7 @@ namespace Conduit.Business.Services
         Task<ResultMessage<Note>> GetNoteAsync(int id);
         Task<ResultMessage<Note>> InsertAsync(Note user);
         Task<ResultMessage<Note>> UpdateAsync(Note user);
-        //Task<ResultMessage<User>> DeleteAsync(int id);
-        //Task<ResultMessage<UserDto>> GetUserAsync(int id);
-        //Task<ResultMessage<UserDto>> GetUserModel(string username);
-
+        Task<ResultMessage<Note>> DeleteAsync(int id);
 
         //Task<User> Get(Expression<Func<User, bool>> expression);
 

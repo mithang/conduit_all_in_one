@@ -37,6 +37,7 @@ namespace Conduit.Business.Messages
         ArticleFavoriteCouldNotDeleted = 128,
         NoteNotFound=129,
         NoteNotInserted = 130,
-        NoteCouldNotUpdated = 131
+        NoteCouldNotUpdated = 131,
+        NoteCouldNotDeleted = 132,
     }
 }

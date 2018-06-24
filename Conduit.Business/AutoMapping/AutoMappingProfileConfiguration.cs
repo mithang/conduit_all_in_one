@@ -20,6 +20,7 @@ namespace Conduit.Business.AutoMapping
         {
             CreateMap<UserDto, User>().ReverseMap();
             CreateMap<CommentDto, Comment>().ReverseMap();
+            //Map nhiều bảng
             CreateMap<ArticleViewModel, Article>().ReverseMap()
                 .ForMember(dest => dest.Tags, opt => opt.MapFrom(src => src.ArticleTags.Select(p => p.TagId).ToList()))
                 .ForMember(p => p.LikedUserIds, opt => opt.MapFrom(src => src.ArticleFavorites.Select(p => p.UserId).ToList()));
