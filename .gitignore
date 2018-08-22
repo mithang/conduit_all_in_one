@@ -32,3 +32,4 @@ msbuild.wrn
 
 # Visual Studio 2017
 .vs/
+/Conduit.Admin/wwwroot/node_modules/
