@@ -1,25 +1,38 @@
-const Menu = [
+﻿const Menu = [
     {
         heading: 'Main Navigation',
         translate: 'sidebar.heading.HEADER'
     },
     {
-        name: 'Dashboard',
+        name: 'BẢNG ĐIỀU KIỂN',
         icon: 'icon-speedometer',
         translate: 'sidebar.nav.DASHBOARD',
         label: { value: 3, color: 'success' },
         submenu: [{
-                name: 'Dashboard v1',
+                name: 'BIỂU ĐỒ THỐNG KÊ',
                 path: 'dashboardv1'
             },
             {
-                name: 'Dashboard v2',
+                name: 'BIỂU ĐỒ HÓA ĐƠN',
                 path: 'dashboardv2'
             },
             {
-                name: 'Dashboard v3',
+                name: 'BIỂU ĐỒ THANH TOÁN',
                 path: 'dashboardv3'
             }
+        ]
+    },
+    {
+        name: 'QUẢN LÝ SÁCH',
+        icon: 'icon-speech',
+        submenu: [{
+            name: 'DANH MỤC SÁCH',
+            path: 'books-list'
+        },
+        {
+            name: 'DANH MỤC TÁC GIẢ',
+            path: 'author-list'
+        }
         ]
     },
     {

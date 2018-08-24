@@ -59,7 +59,7 @@ namespace Conduit.WebApi.Controllers
         [HttpPost]
         public async Task<IActionResult> PostAsync([FromBody]UserDto userDto)
         {
-            //Model is valid mi yapılıcak...
+            
             if (ModelState.IsValid)
             {
                 var durum =await _userServices.InsertAsync(userDto);
@@ -76,7 +76,7 @@ namespace Conduit.WebApi.Controllers
         [Authorize]
         public async Task<IActionResult> PutAsync([FromBody]UserDto userDto)
         {
-            //Model is valid mi yapılıcak...
+            
             if (ModelState.IsValid)
             {
                 var durum = await _userServices.UpdateAsync(userDto);

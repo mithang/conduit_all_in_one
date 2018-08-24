@@ -15,9 +15,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Conduit.WebApi", "Conduit.W
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Conduit.WebUI", "Conduit.WebUI\Conduit.WebUI.csproj", "{CE7C360A-0A9C-48DF-8DC4-4DE07050926F}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Demo", "Demo\Demo.csproj", "{71BD67EE-1163-445F-B8F3-9480578F3C8B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Conduit.Sample", "Demo\Conduit.Sample.csproj", "{71BD67EE-1163-445F-B8F3-9480578F3C8B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Conduit.Admin", "Conduit.Admin\Conduit.Admin.csproj", "{3E44058B-3BBB-4446-AEA0-D31D5B7683DF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Conduit.Admin", "Conduit.Admin\Conduit.Admin.csproj", "{3E44058B-3BBB-4446-AEA0-D31D5B7683DF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

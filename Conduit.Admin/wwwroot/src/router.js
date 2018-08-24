@@ -97,7 +97,9 @@ const EcommerceProductView = () => import('@/views/Ecommerce/EcommerceProductVie
 const ForumCategories = () => import('@/views/Forum/ForumCategories.vue')
 const ForumDiscussion = () => import('@/views/Forum/ForumDiscussion.vue')
 const ForumTopics = () => import('@/views/Forum/ForumTopics.vue')
-
+//Book
+const BookList = () => import('@/views/Books/BookList.vue')
+const AuthorList = () => import('@/views/Books/AuthorList.vue')
 
 Vue.use(Router)
 
@@ -344,6 +346,14 @@ export default new Router({
                     component: ForumDiscussion,
                     path: '/forum-discussion'
                 },
+                //Books
+                {
+                    component: BookList,
+                    path: '/books-list'
+                }, {
+                    component: AuthorList,
+                    path: '/author-list'
+                }
             ]
         },
         // Horizontal Layout
