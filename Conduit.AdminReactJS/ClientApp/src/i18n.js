@@ -8,7 +8,7 @@ i18n
     // .use(LanguageDetector)
     .use(reactI18nextModule)
     .init({
-        fallbackLng: 'en',
+        fallbackLng: 'vn',//Chọn ngôn ngữ mặt định
         backend: {
             loadPath: 'locales/{{lng}}/{{ns}}.json',
         },
