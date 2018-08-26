@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import ContentWrapper from '../Layout/ContentWrapper';
 import {Container, Card, CardHeader, CardBody, CardTitle} from 'reactstrap';
 import $ from 'jquery';
-
+import { translate, Trans } from 'react-i18next';
 import Datatable from './../Tables/Datatable';
 
 class Book extends Component {
@@ -171,4 +171,4 @@ class Book extends Component {
 
 }
 
-export default Book;
+export default  translate('translations')(Book);

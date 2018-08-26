@@ -9,6 +9,10 @@
       "COMPONENTS": "Components",
       "MORE": "More"
     },
+    "books": {
+      "book": "BOOKS",
+      "author": "AUTHORS"
+    },
     "nav": {
       "DASHBOARD": "Dashboard",
       "WIDGETS": "Widgets",

@@ -4,20 +4,20 @@ const Menu = [
         translate: 'sidebar.heading.HEADER'
     },
     {
-        name: 'Dashboard',
+        name: 'BẢNG ĐIỀU KHIỂN',
         icon: 'icon-speedometer',
         translate: 'sidebar.nav.DASHBOARD',
         label: { value: 3, color: 'success' },
         submenu: [{
-                name: 'Dashboard v1',
+                name: 'THỐNG KÊ BÁN HÀNG',
                 path: 'dashboard'
             },
             {
-                name: 'Dashboard v2',
+                name: 'THỐNG KÊ DOANH THU',
                 path: 'dashboardv2'
             },
             {
-                name: 'Dashboard v3',
+                name: 'THỐNG KÊ BÁN RA',
                 path: 'dashboardv3'
             }
         ]
@@ -27,11 +27,13 @@ const Menu = [
         icon: 'icon-speech',
         submenu: [{
                 name: 'DANH MỤC SÁCH',
-                path: 'books'
+                path: 'books',
+                translate: 'sidebar.books.book'
             },
             {
                 name: 'DANH MỤC TÁC GIẢ',
-                path: 'author'
+                path: 'author',
+                translate: 'sidebar.books.author'
             }
         ]
     },

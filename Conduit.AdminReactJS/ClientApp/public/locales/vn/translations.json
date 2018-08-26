@@ -5,12 +5,16 @@
   "sidebar": {
     "WELCOME": "Bienvenido",
     "heading": {
-      "HEADER": "Navegacion principal",
+      "HEADER": "BẢNG ĐIỀU KIỂN",
       "COMPONENTS": "Componentes",
       "MORE": "Aun Mas"
     },
+    "books": {
+      "book": "DANH MỤC SÁCH",
+      "author": "DANH MỤC TÁC GIẢ"
+    },
     "nav": {
-      "DASHBOARD": "Panel",
+      "DASHBOARD": "TRANG CHỦ",
       "WIDGETS": "Widgets",
       "DOCUMENTATION": "Documentación",
       "element": {

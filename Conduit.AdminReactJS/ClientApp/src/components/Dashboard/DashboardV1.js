@@ -72,7 +72,6 @@ class DashboardV1 extends Component {
         lag:Vietnamese
 
     }
-
     componentDidMount() {
         // Easy pie
         let pieOptions1 = {
@@ -88,10 +87,13 @@ class DashboardV1 extends Component {
             size: 145
         };
         new EasyPieChart(this.refs.easypie, pieOptions1);
+        
     }
 
     changeLanguage = lng => {
+        
         this.props.i18n.changeLanguage(lng);
+        //Xử lí chọn ngôn ngữ khi tương tác
         var textLng='';
         if(lng==='vn'){
             textLng=Vietnamese;
@@ -111,13 +113,14 @@ class DashboardV1 extends Component {
     }
 
     render() {
+        
         // Usse t function instead of Trans component
         // const { t } = this.props;
 
         return (
             <ContentWrapper>
                 <div className="content-heading">
-                    <div>Dashboard
+                    <div><Trans i18nKey='sidebar.heading.HEADER'></Trans>
                         <small><Trans i18nKey='dashboard.WELCOME'></Trans></small>
                     </div>
                     { /* START Language list */ }
