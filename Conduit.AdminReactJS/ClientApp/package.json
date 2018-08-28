@@ -22,6 +22,7 @@
     "@fortawesome/fontawesome-free-webfonts": "1.0.9",
     "animate.css": "3.5.2",
     "animo": "github:thrivingkings/animo.js",
+    "axios": "^0.18.0",
     "bootstrap": "4.1.3",
     "bootstrap-filestyle": "github:markusslima/bootstrap-filestyle#v2.1.0",
     "chart.js": "2.5.0",
@@ -98,7 +99,12 @@
     "sweetalert": "1.1.3",
     "validator": "10.4.0",
     "weather-icons": "github:erikflowers/weather-icons",
-    "whirl": "github:themicon/whirl"
+    "whirl": "github:themicon/whirl",
+    "react-redux": "^5.0.6",
+    "lodash": "^4.17.4",
+    "react-scripts": "1.0.14",
+    "redux": "^3.7.2",
+    "redux-thunk": "^2.2.0"
   },
   "devDependencies": {
     "css-loader": "0.28.11",

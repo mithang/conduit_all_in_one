@@ -32,7 +32,7 @@ const Menu = [
             },
             {
                 name: 'DANH MỤC TÁC GIẢ',
-                path: 'author',
+                path: 'authors',
                 translate: 'sidebar.books.author'
             }
         ]
