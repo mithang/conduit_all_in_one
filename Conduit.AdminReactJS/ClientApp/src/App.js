@@ -29,10 +29,11 @@ import reducers from "./reducers";
 // Disable warning "Synchronous XMLHttpRequest on the main thread is deprecated.."
 $.ajaxPrefilter(o => o.async = true);
 
-
+const store = createStore(reducers, {}, applyMiddleware(ReduxThunk));
 class App extends Component {
+  
   render() {
-    const store = createStore(reducers, {}, applyMiddleware(ReduxThunk));
+   
     // specify base href from env varible 'WP_BASE_HREF'
     // use only if application isn't served from the root
     // for development it is forced to root only

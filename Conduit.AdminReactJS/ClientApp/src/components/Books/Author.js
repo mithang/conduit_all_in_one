@@ -1,73 +1,84 @@
 ﻿import React, {Component} from 'react';
 import ContentWrapper from '../Layout/ContentWrapper';
-import {Container, Card, CardHeader, CardBody, CardTitle} from 'reactstrap';
+import {
+    Container,
+    Card,
+    CardHeader,
+    CardBody,
+    CardTitle,
+    CardFooter
+} from 'reactstrap';
 import $ from 'jquery';
-import { translate, Trans } from 'react-i18next';
+import {translate, Trans} from 'react-i18next';
 import Datatable from '../Tables/Datatable';
-import { connect } from 'react-redux';
-import { getAuthorsAction } from './../../actions';
+import Tb from '../Tables/Tb';
+import {connect} from 'react-redux';
+import {getAuthorsAction} from './../../actions';
 import _ from 'lodash';
-
+import Pagination from "react-js-pagination";
+import 'loaders.css/loaders.css';
+import 'spinkit/css/spinkit.css';
+import './AuthorCSS.css';
 class Author extends Component {
 
-    state = {
-        dtOptions1: {
-            'paging': true, // Table pagination
-            'ordering': true, // Column ordering
-            'info': true, // Bottom left status text
-            "lengthMenu": [[5, 10, 20, -1], [5, 10, 20, "All"]],
-            responsive: true,
-            // Text translation options Note the required keywords between underscores (e.g
-            // _MENU_)
-            oLanguage: {
-                sSearch: '<em class="fa fa-search"></em>',
-                sLengthMenu: '_MENU_ records per page',
-                info: 'Showing page _PAGE_ of _PAGES_',
-                zeroRecords: 'Nothing found - sorry',
-                infoEmpty: 'No records available',
-                infoFiltered: '(filtered from _MAX_ total records)',
-                oPaginate: {
-                    sNext: '<em class="fa fa-caret-right"></em>',
-                    sPrevious: '<em class="fa fa-caret-left"></em>'
-                }
-            }
+    constructor(props) {
+        super(props);
+        this.handlePageChanged = this
+            .handlePageChanged
+            .bind(this);
+
+        this.state = {
+            activePage: 15
+        };
+    }
+
+    componentDidMount() {
+        this
+            .props
+            .getAuthorsAction();
+
+    }
+    renderItem(item) {
+
+        return (
+            <tr className="gradeX" key={item.Name}>
+                <td>{item.Name}</td>
+                <td>{item.Age}</td>
+                <td>{item.Genre}</td>
+                <td>4</td>
+                <td>X</td>
+            </tr>
+        );
+
+    }
+    renderTest() {
+        if (this.props.loading) {
+            return (
+                <div>DANG TẢI DỮ LIỆU ...</div>
+            )
         }
 
+        return <Tb data={this.props.authors} loading={this.props.loading}></Tb>
     }
+    renderTable() {
+        // if (this.props.loading) {     return (         <div>DANG LOADING</div>     )
+        // }
 
-    // Access to internal datatable instance for customizations
-    dtInstance = dtInstance => {
-        const inputSearchClass = 'datatable_input_col_search';
-        const columnInputs = $('tfoot .' + inputSearchClass);
-        // On input keyup trigger filtering
-        columnInputs.keyup(function () {
-            dtInstance.fnFilter(this.value, columnInputs.index(this));
-        });
-    }
-    
-    componentDidMount() {
-       this.props.getAuthorsAction();
-    }
-    renderItem(item){
-        return (
-        <tr className="gradeX">
-            <td>{item.Name}</td>
-            <td>{item.Age}</td>
-            <td>{item.Genre}</td>
-            <td>4</td>
-            <td>X</td>
-        </tr>);
-        // <tr className="gradeC">
-        //     <td>Trident</td>
-        //     <td>Internet Explorer 5.0</td>
-        //     <td>Win 95+</td>
-        //     <td>5</td>
-        //     <td>C</td>
-        // </tr>
+        return _.map(this.props.authors, item => this.renderItem(item));
 
+    }
+    renderLoading() {
+        return this.props.loading
+            ? "whirl no-overlay"
+            : ""
+        //return this.props.loading===false?"whirl standard":""
+    }
+    handlePageChanged(pageNumber) {
+        console.log(`active page is ${pageNumber}`);
+        this.setState({activePage: pageNumber});
     }
     render() {
-       
+
         return (
             <ContentWrapper>
                 <div className="content-heading">
@@ -75,9 +86,44 @@ class Author extends Component {
                         <small>Sách được cập nhật liên tục, trên hệ thống máy chủ</small>
                     </div>
                 </div>
+                <Card>
+                    <CardHeader>
+                        
+                    <div className="d-flex align-items-center">
+                    <div className="input-group">
+                    <select className="custom-select" id="inputGroupSelect04">
+                        <option value="0">Bulk action</option>
+                        <option value="1">Delete</option>
+                        <option value="2">Clone</option>
+                        <option value="3">Export</option>
+                    </select>
+                    <div className="input-group-append">
+                        <button className="btn btn-secondary" type="button">Apply</button>
+                    </div>
 
-                <Datatable options={this.state.dtOptions1}>
-                    <table className="table table-striped my-4 w-100">
+                    <input type="text" class="form-control" placeholder="Search"/>
+                    <div class="input-group-append">
+                        <button class="btn btn-secondary" type="Search">Button</button>
+                    </div>
+                </div>
+                            <div className='ml-auto'>
+                                <Pagination
+                                    activePage={this.state.activePage}
+                                    itemsCountPerPage={10}
+                                    totalItemsCount={450}
+                                    pageRangeDisplayed={5}
+                                    onChange={this.handlePageChanged}/>
+                            </div>
+
+                        </div>
+                            
+                     
+
+                    </CardHeader>
+                    <CardBody>
+                    <table
+                        className={`table table-striped my-4 w-100 ${this.renderLoading()}`}
+                        ref={el => this.el = el}>
                         <thead>
                             <tr>
                                 <th data-priority="1">MÃ SÁCH</th>
@@ -88,15 +134,25 @@ class Author extends Component {
                             </tr>
                         </thead>
                         <tbody>
-
-                           {
-                               _.map(this.props.authors,(item)=>this.renderItem(item))
-                              
-                            }
+                            {this.renderTable()}
                         </tbody>
                     </table>
-                </Datatable>
+                    </CardBody>
+                    <CardFooter>
+                        <div className="d-flex align-items-center">
 
+                            <div className='ml-auto'>
+                                <Pagination
+                                    activePage={this.state.activePage}
+                                    itemsCountPerPage={10}
+                                    totalItemsCount={450}
+                                    pageRangeDisplayed={5}
+                                    onChange={this.handlePageChanged}/>
+                            </div>
+
+                        </div>
+                    </CardFooter>
+                </Card>
             </ContentWrapper>
         );
     }
@@ -104,14 +160,14 @@ class Author extends Component {
 }
 
 //export default  translate('translations')(Author);
-const mapStateToProps = ({ books }) => {
-    const {authors,loading}=books;
-  
-    return {authors,loading};
-  };
-  
-  const mapDispatchToProps ={
+const mapStateToProps = ({books}) => {
+    const {authors, loading} = books;
+
+    return {authors, loading};
+};
+
+const mapDispatchToProps = {
     getAuthorsAction
-  };
-  
-  export default connect(mapStateToProps,mapDispatchToProps)(Author);
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(Author);

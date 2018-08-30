@@ -5,6 +5,7 @@ import {
     USER_INFO_FAIL,
     LOGIN_INFO_USER,
     BANK_CHANGED,
+    USERS_FETCHING,
     USERS_FETCH_SUCCESS,
     USERS_FETCH_FAIL,
   } from "../actions/types";
@@ -12,7 +13,7 @@ import {
   const INITIAL_STATE = {
     author: null,
     error: "",
-    loading: false,
+    loading: true,
     authors: [],
   };
   
@@ -36,8 +37,10 @@ import {
           author: "",
           loading: false,
         };
+      case USERS_FETCHING:
+        return { ...state, loading:true };
       case USERS_FETCH_SUCCESS:
-        return { ...state, authors: action.payload };
+        return { ...state, authors: action.payload, loading: false  };
       case USERS_FETCH_FAIL:
         return { ...state, error: action.payload, author: "", loading: false };
       default:

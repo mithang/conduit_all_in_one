@@ -7,6 +7,7 @@ import {
     LOGIN_INFO_USER,
     USERS_FETCH_SUCCESS,
     USERS_FETCH_FAIL,
+    USERS_FETCHING
   } from "./types";
   import { GetAuthors } from './../apis/BookApi';
 
@@ -59,6 +60,7 @@ import {
   
   export const getAuthorsAction = () => {
     return dispatch => {
+      dispatch({ type: USERS_FETCHING });
       GetAuthors().then(authors=>{
         dispatch({
           type: USERS_FETCH_SUCCESS,
