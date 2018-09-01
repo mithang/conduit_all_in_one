@@ -46,6 +46,7 @@ namespace Conduit.WebApi
                         .AllowAnyOrigin()
                         .AllowAnyMethod()
                         .AllowAnyHeader()
+                        .WithExposedHeaders("x-pagination")
                         .AllowCredentials();
                     });
             });

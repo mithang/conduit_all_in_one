@@ -10,7 +10,7 @@ import {
     USERS_FETCHING
   } from "./types";
   import { GetAuthors } from './../apis/BookApi';
-
+  import {PageHelper} from './../utils/PageHelper';
   export const fullNameChanged = text => {
     return {
       type: FULLNAME_CHANGED,
@@ -55,16 +55,19 @@ import {
       type: USER_INFO_SUCCESS,
       payload: user,
     });
-    // Actions.main();
+   
   };
   
-  export const getAuthorsAction = () => {
+  export const getAuthorsAction = (page,size,searchquery) => {
     return dispatch => {
       dispatch({ type: USERS_FETCHING });
-      GetAuthors().then(authors=>{
+      GetAuthors(page,size,searchquery).then(authors=>{
+        
+        var pagination=  new PageHelper(authors.headers["x-pagination"]).getPage()
         dispatch({
           type: USERS_FETCH_SUCCESS,
           payload: authors.data,
+          page:pagination
         });
       }).catch(e=>{
         dispatch({ type: USERS_FETCH_FAIL });

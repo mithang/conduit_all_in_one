@@ -9,5 +9,5 @@ export const GetInfoApp = (keyApp, token = "", os) =>
   });
 
  
-export const GetAuthors = (page=1,size=10) =>
-  axios.get(`api/authors?pagenumber=${page}&pagesize=${size}`);
+export const GetAuthors = (page=1,size=2,searchquery='') =>
+  axios.get(`api/authors?pagenumber=${page}&pagesize=${size}&searchquery=${searchquery}`);

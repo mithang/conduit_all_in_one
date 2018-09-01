@@ -9,12 +9,15 @@ import {
     USERS_FETCH_SUCCESS,
     USERS_FETCH_FAIL,
   } from "../actions/types";
+  import { Page } from "../utils/PageHelper";
   
   const INITIAL_STATE = {
     author: null,
     error: "",
     loading: true,
     authors: [],
+    page:new Page("",1,"",1,1,1),
+    searchquery:''
   };
   
   export default (state = INITIAL_STATE, action) => {
@@ -30,7 +33,6 @@ import {
       case USER_INFO_SUCCESS:
         return { ...state, ...INITIAL_STATE, user: action.payload };
       case USER_INFO_FAIL:
-        //return { ...state, error: 'Authentication Failed.', password: '', loading: false };
         return {
           ...state,
           error: "Chứng thực thất bại !",
@@ -40,7 +42,7 @@ import {
       case USERS_FETCHING:
         return { ...state, loading:true };
       case USERS_FETCH_SUCCESS:
-        return { ...state, authors: action.payload, loading: false  };
+        return { ...state, authors: action.payload, loading: false,page: action.page };
       case USERS_FETCH_FAIL:
         return { ...state, error: action.payload, author: "", loading: false };
       default:

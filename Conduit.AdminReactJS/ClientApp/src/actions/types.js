@@ -16,6 +16,7 @@ export const BANK_CHANGED = 'bank_changed';
 export const USER_INFO_SUCCESS = 'user_info_success';
 export const USER_INFO_FAIL = 'user_info_fail';
 export const LOGIN_INFO_USER = 'login_info_user';
+export const USERS_FETCHING = 'USERS_FETCHING';
 export const USERS_FETCH_SUCCESS = 'users_fetch_success';
 export const USERS_FETCH_FAIL = 'users_fetch_fail';
 

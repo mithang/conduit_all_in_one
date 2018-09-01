@@ -113,6 +113,7 @@ const listofPages = [
 ];
 
 const Routes = ({ location }) => {
+   
     const currentKey = location.pathname.split('/')[1] || '/';
     const timeout = { enter: 500, exit: 500 };
 

@@ -1,24 +1,25 @@
-﻿import React, {Component} from 'react';
+﻿import React, { Component } from 'react';
 import ContentWrapper from '../Layout/ContentWrapper';
+import { Route, Link } from 'react-router-dom'
 import {
     Container,
     Card,
     CardHeader,
     CardBody,
     CardTitle,
-    CardFooter
+    CardFooter,
+    Table
 } from 'reactstrap';
-import $ from 'jquery';
-import {translate, Trans} from 'react-i18next';
-import Datatable from '../Tables/Datatable';
-import Tb from '../Tables/Tb';
-import {connect} from 'react-redux';
-import {getAuthorsAction} from './../../actions';
+import { translate, Trans } from 'react-i18next';
+import { connect } from 'react-redux';
+import { getAuthorsAction } from './../../actions';
 import _ from 'lodash';
 import Pagination from "react-js-pagination";
 import 'loaders.css/loaders.css';
 import 'spinkit/css/spinkit.css';
 import './AuthorCSS.css';
+import AuthorItem from './AuthorItem';
+//https://reactjs.org/docs/forms.html
 class Author extends Component {
 
     constructor(props) {
@@ -26,16 +27,17 @@ class Author extends Component {
         this.handlePageChanged = this
             .handlePageChanged
             .bind(this);
-
+        this.handleChange = this.handleChange.bind(this);
+        this.handleSubmit = this.handleSubmit.bind(this);
         this.state = {
-            activePage: 15
-        };
+            searchquery: ''
+        }
     }
 
     componentDidMount() {
         this
             .props
-            .getAuthorsAction();
+            .getAuthorsAction(1, 2);
 
     }
     renderItem(item) {
@@ -46,20 +48,21 @@ class Author extends Component {
                 <td>{item.Age}</td>
                 <td>{item.Genre}</td>
                 <td>4</td>
-                <td>X</td>
+                <td>
+                    <Link className="btn btn-sm btn-secondary" to={`${this.props.match.url}/1`}>
+                        <em className="fas fa-pencil-alt"></em>
+                        {/*Thêm*/}
+                    </Link>
+                    <button type="button" className="btn btn-sm btn-danger">
+                        <em className="fas fa-trash-alt"></em>
+                    </button>
+                
+                </td>
             </tr>
         );
 
     }
-    renderTest() {
-        if (this.props.loading) {
-            return (
-                <div>DANG TẢI DỮ LIỆU ...</div>
-            )
-        }
 
-        return <Tb data={this.props.authors} loading={this.props.loading}></Tb>
-    }
     renderTable() {
         // if (this.props.loading) {     return (         <div>DANG LOADING</div>     )
         // }
@@ -69,66 +72,70 @@ class Author extends Component {
     }
     renderLoading() {
         return this.props.loading
-            ? "whirl no-overlay"
-            : ""
+            ? "table table-striped my-4 w-100 whirl no-overlay"
+            : "table table-striped my-4 w-100"
         //return this.props.loading===false?"whirl standard":""
     }
     handlePageChanged(pageNumber) {
-        console.log(`active page is ${pageNumber}`);
-        this.setState({activePage: pageNumber});
+        this
+            .props
+            .getAuthorsAction(pageNumber, 2, this.state.searchquery);
     }
-    render() {
+    handleChange(event) {
+        this.setState({ searchquery: event.target.value });
+    }
 
+    handleSubmit(event) {
+        this.props.getAuthorsAction(1, 2, this.state.searchquery)
+        event.preventDefault();
+    }
+    renderContent() {
         return (
-            <ContentWrapper>
+            <div>
                 <div className="content-heading">
-                    <div>DANH MỤC TÁC GIẢ
+                    <div>
+                        DANH MỤC TÁC GIẢ
                         <small>Sách được cập nhật liên tục, trên hệ thống máy chủ</small>
                     </div>
-                </div>
-                <Card>
-                    <CardHeader>
-                        
-                    <div className="d-flex align-items-center">
-                    <div className="input-group">
-                    <select className="custom-select" id="inputGroupSelect04">
-                        <option value="0">Bulk action</option>
-                        <option value="1">Delete</option>
-                        <option value="2">Clone</option>
-                        <option value="3">Export</option>
-                    </select>
-                    <div className="input-group-append">
-                        <button className="btn btn-secondary" type="button">Apply</button>
+                    <div className='ml-auto'>
+                        <Link className="btn btn-secondary" to={`${this.props.match.url}/1`}>Thêm</Link>
                     </div>
 
-                    <input type="text" class="form-control" placeholder="Search"/>
-                    <div class="input-group-append">
-                        <button class="btn btn-secondary" type="Search">Button</button>
-                    </div>
                 </div>
-                            <div className='ml-auto'>
-                                <Pagination
-                                    activePage={this.state.activePage}
-                                    itemsCountPerPage={10}
-                                    totalItemsCount={450}
-                                    pageRangeDisplayed={5}
-                                    onChange={this.handlePageChanged}/>
-                            </div>
+                <div className='authorMargin'>
+
+                    <div className="d-flex align-items-center">
+                        <div className="input-group">
+
+                            {/*
+                    <div className="input-group-append">
+                        <Link className="btn btn-secondary" to={`${this.props.match.url}/1`}>Thêm</Link>
+                        <Route path={`${this.props.match.url}/:id`} component={AuthorItem}/>
+                    </div>
+                */}
 
                         </div>
-                            
-                     
 
-                    </CardHeader>
-                    <CardBody>
+                        <form onSubmit={this.handleSubmit} className='ml-auto input-group'>
+                            <input value={this.state.searchquery} onChange={this.handleChange} type="text" className="form-control" placeholder="Nhập từ khóa tìm kiếm..." />
+                            <div className="input-group-append">
+                                <button className="btn btn-secondary" type="Search">Tìm kiếm</button>
+                            </div>
+                        </form>
+
+
+                    </div>
+
+                </div>
+                <Card>
                     <table
-                        className={`table table-striped my-4 w-100 ${this.renderLoading()}`}
+                        className={this.renderLoading()}
                         ref={el => this.el = el}>
                         <thead>
                             <tr>
-                                <th data-priority="1">MÃ SÁCH</th>
-                                <th>TÊN SÁCH</th>
-                                <th>NĂM PHÁT HÀNH</th>
+                                <th data-priority="1">MÃ TÁC GIẢ</th>
+                                <th>TÊN TÁC GIẢ</th>
+                                <th>NĂM SINH</th>
                                 <th className="sort-numeric">THỂ LOẠI</th>
                                 <th className="sort-alpha" data-priority="2">SỐ LƯỢNG XB</th>
                             </tr>
@@ -137,22 +144,36 @@ class Author extends Component {
                             {this.renderTable()}
                         </tbody>
                     </table>
-                    </CardBody>
-                    <CardFooter>
-                        <div className="d-flex align-items-center">
-
-                            <div className='ml-auto'>
-                                <Pagination
-                                    activePage={this.state.activePage}
-                                    itemsCountPerPage={10}
-                                    totalItemsCount={450}
-                                    pageRangeDisplayed={5}
-                                    onChange={this.handlePageChanged}/>
-                            </div>
-
-                        </div>
-                    </CardFooter>
                 </Card>
+                <div>
+                    <div className="d-flex align-items-center">
+
+                        <div className='ml-auto'>
+                            <Pagination
+                                activePage={this.props.page.currentPage}
+                                itemsCountPerPage={2}
+                                totalItemsCount={this.props.page.totalCount}
+                                pageRangeDisplayed={5}
+                                onChange={this.handlePageChanged} />
+                        </div>
+
+                    </div>
+                </div></div>
+        );
+    }
+    render() {
+
+        return (
+            <ContentWrapper>
+
+                <Route path={`${this.props.match.url}/:id`} component={AuthorItem} />
+                <Route
+                    exact
+                    path={this.props.match.url}
+                    render={() => this.renderContent()}
+                />
+
+
             </ContentWrapper>
         );
     }
@@ -160,10 +181,10 @@ class Author extends Component {
 }
 
 //export default  translate('translations')(Author);
-const mapStateToProps = ({books}) => {
-    const {authors, loading} = books;
+const mapStateToProps = ({ books }) => {
+    const { authors, loading, page } = books;
 
-    return {authors, loading};
+    return { authors, loading, page };
 };
 
 const mapDispatchToProps = {
