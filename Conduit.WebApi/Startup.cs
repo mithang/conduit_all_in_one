@@ -21,6 +21,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
+using Swashbuckle.AspNetCore.Swagger;
 
 namespace Conduit.WebApi
 {
@@ -101,6 +102,10 @@ namespace Conduit.WebApi
             services.AddSwaggerGen(option =>
             {
                 option.SwaggerDoc("ConduitApi", new Swashbuckle.AspNetCore.Swagger.Info { Title = "Conduit API", Version = "v1" });
+                option.AddSecurityDefinition("Bearer", new ApiKeyScheme { In = "header", Description = "Please enter JWT with Bearer into field", Name = "Authorization", Type = "apiKey" });
+                option.AddSecurityRequirement(new Dictionary<string, IEnumerable<string>> {
+                    { "Bearer", Enumerable.Empty<string>() },
+                });
 
             });
 
