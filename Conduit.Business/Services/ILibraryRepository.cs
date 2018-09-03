@@ -20,5 +20,6 @@ namespace Conduit.Business.Services
         void UpdateBookForAuthor(Book book);
         void DeleteBook(Book book);
         bool Save();
+        void AddAuthor(Guid authorId, Author authorEntity);
     }
 }

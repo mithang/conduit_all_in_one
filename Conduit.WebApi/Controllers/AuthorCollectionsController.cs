@@ -15,10 +15,12 @@ namespace Conduit.WebApi.Controllers
     public class AuthorCollectionsController : Controller
     {
         private ILibraryRepository _libraryRepository;
+        private IMapper _mapper;
 
-        public AuthorCollectionsController(ILibraryRepository libraryRepository)
+        public AuthorCollectionsController(ILibraryRepository libraryRepository, IMapper mapper)
         {
             _libraryRepository = libraryRepository;
+            _mapper = mapper;
         }
 
         [HttpPost]
@@ -30,7 +32,7 @@ namespace Conduit.WebApi.Controllers
                 return BadRequest();
             }
 
-            var authorEntities = Mapper.Map<IEnumerable<Author>>(authorCollection);
+            var authorEntities = _mapper.Map<IEnumerable<Author>>(authorCollection);
 
             foreach (var author in authorEntities)
             {
@@ -42,7 +44,7 @@ namespace Conduit.WebApi.Controllers
                 throw new Exception("Creating an author collection failed on save.");
             }
 
-            var authorCollectionToReturn = Mapper.Map<IEnumerable<AuthorDto>>(authorEntities);
+            var authorCollectionToReturn = _mapper.Map<IEnumerable<AuthorDto>>(authorEntities);
             var idsAsString = string.Join(",",
                 authorCollectionToReturn.Select(a => a.Id));
 
@@ -70,7 +72,7 @@ namespace Conduit.WebApi.Controllers
                 return NotFound();
             }
 
-            var authorsToReturn = Mapper.Map<IEnumerable<AuthorDto>>(authorEntities);
+            var authorsToReturn = _mapper.Map<IEnumerable<AuthorDto>>(authorEntities);
             return Ok(authorsToReturn);
         }
     }

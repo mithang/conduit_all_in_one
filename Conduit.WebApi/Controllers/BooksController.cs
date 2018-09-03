@@ -19,14 +19,15 @@ namespace Conduit.WebApi.Controllers
         private ILibraryRepository _libraryRepository;
         private ILogger<BooksController> _logger;
         private IUrlHelper _urlHelper;
-
-        public BooksController(ILibraryRepository libraryRepository,
+        private IMapper _mapper;
+        public BooksController(ILibraryRepository libraryRepository, IMapper mapper,
             ILogger<BooksController> logger,
             IUrlHelper urlHelper)
         {
             _logger = logger;
             _libraryRepository = libraryRepository;
             _urlHelper = urlHelper;
+            _mapper = mapper;
         }
 
         [HttpGet(Name = "GetBooksForAuthor")]
@@ -39,7 +40,7 @@ namespace Conduit.WebApi.Controllers
 
             var booksForAuthorFromRepo = _libraryRepository.GetBooksForAuthor(authorId);
 
-            var booksForAuthor = Mapper.Map<IEnumerable<BookDto>>(booksForAuthorFromRepo);
+            var booksForAuthor = _mapper.Map<IEnumerable<BookDto>>(booksForAuthorFromRepo);
 
             booksForAuthor = booksForAuthor.Select(book =>
             {
@@ -66,7 +67,7 @@ namespace Conduit.WebApi.Controllers
                 return NotFound();
             }
 
-            var bookForAuthor = Mapper.Map<BookDto>(bookForAuthorFromRepo);
+            var bookForAuthor = _mapper.Map<BookDto>(bookForAuthorFromRepo);
             return Ok(CreateLinksForBook(bookForAuthor));
         }
 
@@ -96,7 +97,7 @@ namespace Conduit.WebApi.Controllers
                 return NotFound();
             }
 
-            var bookEntity = Mapper.Map<Book>(book);
+            var bookEntity = _mapper.Map<Book>(book);
 
             _libraryRepository.AddBookForAuthor(authorId, bookEntity);
 
@@ -105,7 +106,7 @@ namespace Conduit.WebApi.Controllers
                 throw new Exception($"Creating a book for author {authorId} failed on save.");
             }
 
-            var bookToReturn = Mapper.Map<BookDto>(bookEntity);
+            var bookToReturn = _mapper.Map<BookDto>(bookEntity);
 
             return CreatedAtRoute("GetBookForAuthor",
                 new { authorId = authorId, id = bookToReturn.Id },
@@ -167,7 +168,7 @@ namespace Conduit.WebApi.Controllers
             var bookForAuthorFromRepo = _libraryRepository.GetBookForAuthor(authorId, id);
             if (bookForAuthorFromRepo == null)
             {
-                var bookToAdd = Mapper.Map<Book>(book);
+                var bookToAdd = _mapper.Map<Book>(book);
                 bookToAdd.Id = id;
 
                 _libraryRepository.AddBookForAuthor(authorId, bookToAdd);
@@ -177,14 +178,14 @@ namespace Conduit.WebApi.Controllers
                     throw new Exception($"Upserting book {id} for author {authorId} failed on save.");
                 }
 
-                var bookToReturn = Mapper.Map<BookDto>(bookToAdd);
+                var bookToReturn = _mapper.Map<BookDto>(bookToAdd);
 
                 return CreatedAtRoute("GetBookForAuthor",
                     new { authorId = authorId, id = bookToReturn.Id },
                     bookToReturn);
             }
 
-            Mapper.Map(book, bookForAuthorFromRepo);
+            _mapper.Map(book, bookForAuthorFromRepo);
 
             _libraryRepository.UpdateBookForAuthor(bookForAuthorFromRepo);
 
@@ -230,7 +231,7 @@ namespace Conduit.WebApi.Controllers
                     return new UnprocessableEntityObjectResult(ModelState);
                 }
 
-                var bookToAdd = Mapper.Map<Book>(bookDto);
+                var bookToAdd = _mapper.Map<Book>(bookDto);
                 bookToAdd.Id = id;
 
                 _libraryRepository.AddBookForAuthor(authorId, bookToAdd);
@@ -240,13 +241,13 @@ namespace Conduit.WebApi.Controllers
                     throw new Exception($"Upserting book {id} for author {authorId} failed on save.");
                 }
 
-                var bookToReturn = Mapper.Map<BookDto>(bookToAdd);
+                var bookToReturn = _mapper.Map<BookDto>(bookToAdd);
                 return CreatedAtRoute("GetBookForAuthor",
                     new { authorId = authorId, id = bookToReturn.Id },
                     bookToReturn);
             }
 
-            var bookToPatch = Mapper.Map<BookForUpdateDto>(bookForAuthorFromRepo);
+            var bookToPatch = _mapper.Map<BookForUpdateDto>(bookForAuthorFromRepo);
 
             patchDoc.ApplyTo(bookToPatch, ModelState);
 
@@ -265,7 +266,7 @@ namespace Conduit.WebApi.Controllers
                 return new UnprocessableEntityObjectResult(ModelState);
             }
 
-            Mapper.Map(bookToPatch, bookForAuthorFromRepo);
+            _mapper.Map(bookToPatch, bookForAuthorFromRepo);
 
             _libraryRepository.UpdateBookForAuthor(bookForAuthorFromRepo);
 

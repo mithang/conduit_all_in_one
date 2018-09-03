@@ -141,5 +141,10 @@ namespace Conduit.Business.Services
         {
             return (_context.SaveChanges() >= 0);
         }
+
+        public void AddAuthor(Guid authorId, Author authorEntity)
+        {
+            _context.Authors.Add(authorEntity);
+        }
     }
 }

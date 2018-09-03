@@ -17,9 +17,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Conduit.WebUI", "Conduit.We
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Conduit.Sample", "Conduit.Sample\Conduit.Sample.csproj", "{71BD67EE-1163-445F-B8F3-9480578F3C8B}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Conduit.Admin", "Conduit.Admin\Conduit.Admin.csproj", "{3E44058B-3BBB-4446-AEA0-D31D5B7683DF}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Conduit.AdminReactJS", "Conduit.AdminReactJS\Conduit.AdminReactJS.csproj", "{AAC04819-8B41-4CA0-BB34-9B3B8DB15EE7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Conduit.Admin", "Conduit.AdminReactJS\Conduit.Admin.csproj", "{AAC04819-8B41-4CA0-BB34-9B3B8DB15EE7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -55,10 +53,6 @@ Global
 		{71BD67EE-1163-445F-B8F3-9480578F3C8B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{71BD67EE-1163-445F-B8F3-9480578F3C8B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{71BD67EE-1163-445F-B8F3-9480578F3C8B}.Release|Any CPU.Build.0 = Release|Any CPU
-		{3E44058B-3BBB-4446-AEA0-D31D5B7683DF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{3E44058B-3BBB-4446-AEA0-D31D5B7683DF}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{3E44058B-3BBB-4446-AEA0-D31D5B7683DF}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{3E44058B-3BBB-4446-AEA0-D31D5B7683DF}.Release|Any CPU.Build.0 = Release|Any CPU
 		{AAC04819-8B41-4CA0-BB34-9B3B8DB15EE7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{AAC04819-8B41-4CA0-BB34-9B3B8DB15EE7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AAC04819-8B41-4CA0-BB34-9B3B8DB15EE7}.Release|Any CPU.ActiveCfg = Release|Any CPU

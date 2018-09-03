@@ -111,11 +111,9 @@ class AuthorItem extends Component {
                         <form onSubmit={this.onSubmit} action="" name="formDemo">
                             { /* START card */ }
                             <Card className="card-default">
-                                <CardHeader>
-                                    <div className="card-title">Fields validation</div>
-                                </CardHeader>
+                               
                                 <CardBody>
-                                    <legend className="mb-4">Type validation</legend>
+                                    
                                     <fieldset>
                                         <div className="form-group row align-items-center">
                                             <label className="col-md-2 col-form-label">Required Text</label>
@@ -167,7 +165,7 @@ class AuthorItem extends Component {
                                     </fieldset>
                                 </CardBody>
                                 <CardFooter className="text-center">
-                                    <button type="submit" className="btn btn-info">Run validation</button>
+                                    <button type="submit" className="btn btn-info">Lưu</button>
                                 </CardFooter>
                             </Card>
                             { /* END card */ }

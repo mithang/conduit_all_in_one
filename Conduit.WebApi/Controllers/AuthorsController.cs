@@ -44,23 +44,26 @@ namespace Conduit.WebApi.Controllers
         public IActionResult GetAuthors(AuthorsResourceParameters authorsResourceParameters,
             [FromHeader(Name = "Accept")] string mediaType)
         {
+            //Chạy web dạng console sẽ thấy log ra
             _logger.LogError("OK");
+            //Kiểm tra tham số tên cần sắp xếp(order by) có phải thuộc tính của Author
             if (!_propertyMappingService.ValidMappingExistsFor<AuthorDto, Author>
                (authorsResourceParameters.OrderBy))
             {
                 return BadRequest();
             }
-
+            //Kiểm tra tham số tên cần lấy có phải thuộc tính của Author
             if (!_typeHelperService.TypeHasProperties<AuthorDto>
                 (authorsResourceParameters.Fields))
             {
                 return BadRequest();
             }
-
+            //Lấy dữ liệu từ tham số truyền vào
             var authorsFromRepo = _libraryRepository.GetAuthors(authorsResourceParameters);
 
             //Áp dụng khi dùng Mapper mà cấu hình trực tiếp trong StartUp, bên dưới là cấu hình profile
             //var authors = Mapper.Map<IEnumerable<AuthorDto>>(authorsFromRepo);
+            //Khi dùng Profile Mapper thì là _mapper.Map<IEnumerable<AuthorDto>>(authorsFromRepo);
             var authors = _mapper.Map<IEnumerable<AuthorDto>>(authorsFromRepo);
 
             if (mediaType == "application/vnd.marvin.hateoas+json")
@@ -126,7 +129,48 @@ namespace Conduit.WebApi.Controllers
                 return Ok(authors.ShapeData(authorsResourceParameters.Fields));
             }
         }
-
+//        [HttpPost(Name = "CreateAuthor")]
+//        public IActionResult CreateAuthor(Guid authorId,
+//            [FromBody] AuthorDto author)
+//        {
+//            if (author == null)
+//            {
+//                return BadRequest();
+//            }
+//
+////            if (book.Description == book.Title)
+////            {
+////                ModelState.AddModelError(nameof(BookForCreationDto),
+////                    "The provided description should be different from the title.");
+////            }
+//
+//            if (!ModelState.IsValid)
+//            {
+//                // return 422
+//                return new UnprocessableEntityObjectResult(ModelState);
+//            }
+//
+////            if (!_libraryRepository.AuthorExists(authorId))
+////            {
+////                return NotFound();
+////            }
+//
+//            var authorEntity = _mapper.Map<Author>(author);
+//
+//            _libraryRepository.AddAuthor(authorId, authorEntity);
+//
+//            if (!_libraryRepository.Save())
+//            {
+//                throw new Exception($"Creating a book for author {authorId} failed on save.");
+//            }
+//
+//            var authorToReturn = _mapper.Map<AuthorDto>(authorEntity);
+//
+////            return CreatedAtRoute("GetBookForAuthor",
+////                new { authorId = authorId, id = authorToReturn.Id },
+////                CreateLinksForAuthor(authorToReturn));
+//            return Ok(authorToReturn);
+//        }
         private string CreateAuthorsResourceUri(
             AuthorsResourceParameters authorsResourceParameters,
             ResourceUriType type)
@@ -186,7 +230,7 @@ namespace Conduit.WebApi.Controllers
                 return NotFound();
             }
 
-            var author = Mapper.Map<AuthorDto>(authorFromRepo);
+            var author = _mapper.Map<AuthorDto>(authorFromRepo);
 
             var links = CreateLinksForAuthor(id, fields);
 
@@ -198,41 +242,41 @@ namespace Conduit.WebApi.Controllers
             return Ok(linkedResourceToReturn);
         }
 
-//        [HttpPost(Name = "CreateAuthor")]
-//        //[RequestHeaderMatchesMediaType("Content-Type",
-//        //    new[] { "application/vnd.marvin.author.full+json" })]
-//        public IActionResult CreateAuthor([FromBody] AuthorForCreationDto author)
-//        {
-//            if (author == null)
-//            {
-//                return BadRequest();
-//            }
-//
-//            var authorEntity = Mapper.Map<Author>(author);
-//
-//            _libraryRepository.AddAuthor(authorEntity);
-//
-//            if (!_libraryRepository.Save())
-//            {
-//                throw new Exception("Creating an author failed on save.");
-//                // return StatusCode(500, "A problem happened with handling your request.");
-//            }
-//
-//            var authorToReturn = Mapper.Map<AuthorDto>(authorEntity);
-//
-//            var links = CreateLinksForAuthor(authorToReturn.Id, null);
-//
-//            var linkedResourceToReturn = authorToReturn.ShapeData(null)
-//                as IDictionary<string, object>;
-//
-//            linkedResourceToReturn.Add("links", links);
-//
-//            return CreatedAtRoute("GetAuthor",
-//                new { id = linkedResourceToReturn["Id"] },
-//                linkedResourceToReturn);
-//        }
-//
-//
+        [HttpPost(Name = "CreateAuthor")]
+        //[RequestHeaderMatchesMediaType("Content-Type",
+        //    new[] { "application/vnd.marvin.author.full+json" })]
+        public IActionResult CreateAuthor([FromBody] AuthorForCreationDto author)
+        {
+            if (author == null)
+            {
+                return BadRequest();
+            }
+
+            var authorEntity = _mapper.Map<Author>(author);
+
+            _libraryRepository.AddAuthor(authorEntity);
+
+            if (!_libraryRepository.Save())
+            {
+                throw new Exception("Creating an author failed on save.");
+                // return StatusCode(500, "A problem happened with handling your request.");
+            }
+
+            var authorToReturn = _mapper.Map<AuthorDto>(authorEntity);
+
+            var links = CreateLinksForAuthor(authorToReturn.Id, null);
+
+            var linkedResourceToReturn = authorToReturn.ShapeData(null)
+                as IDictionary<string, object>;
+
+            linkedResourceToReturn.Add("links", links);
+
+            return CreatedAtRoute("GetAuthor",
+                new { id = linkedResourceToReturn["Id"] },
+                linkedResourceToReturn);
+        }
+
+
 //        [HttpPost(Name = "CreateAuthorWithDateOfDeath")]
 //        //[RequestHeaderMatchesMediaType("Content-Type",
 //        //    new[] { "application/vnd.marvin.authorwithdateofdeath.full+json",
@@ -256,7 +300,7 @@ namespace Conduit.WebApi.Controllers
 //                // return StatusCode(500, "A problem happened with handling your request.");
 //            }
 //
-//            var authorToReturn = Mapper.Map<AuthorDto>(authorEntity);
+//            var authorToReturn = _mapper.Map<AuthorDto>(authorEntity);
 //
 //            var links = CreateLinksForAuthor(authorToReturn.Id, null);
 //
@@ -299,7 +343,7 @@ namespace Conduit.WebApi.Controllers
 
             return NoContent();
         }
-
+        //Tạo tất cả link tương tác với model
         private IEnumerable<LinkDto> CreateLinksForAuthor(Guid id, string fields)
         {
             var links = new List<LinkDto>();
@@ -336,7 +380,7 @@ namespace Conduit.WebApi.Controllers
 
             return links;
         }
-
+        //Tạo link phân trang
         private IEnumerable<LinkDto> CreateLinksForAuthors(
             AuthorsResourceParameters authorsResourceParameters,
             bool hasNext, bool hasPrevious)
@@ -367,7 +411,7 @@ namespace Conduit.WebApi.Controllers
 
             return links;
         }
-
+        //Tạo tùy chọn Header
         [HttpOptions]
         public IActionResult GetAuthorsOptions()
         {
