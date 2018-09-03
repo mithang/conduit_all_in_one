@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import ContentWrapper from '../Layout/ContentWrapper';
 import { Row, Col, Input, Card, CardHeader, CardBody, CardFooter, CustomInput } from 'reactstrap';
 
-import FormValidator from './FormValidator.js';
+import FormValidator from './FormValidator';
 
 /**
  * Validation flow using controlled components

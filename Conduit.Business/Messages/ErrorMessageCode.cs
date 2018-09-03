@@ -6,6 +6,7 @@ namespace Conduit.Business.Messages
 {
     public enum ErrorMessageCode
     {
+        
         CriticalError = 1,
         UsernameAlreadyExists = 101,
         EmailAlreadyExists = 102,
@@ -39,5 +40,10 @@ namespace Conduit.Business.Messages
         NoteNotInserted = 130,
         NoteCouldNotUpdated = 131,
         NoteCouldNotDeleted = 132,
+
+        NotFoundNameOrderBy = 133,
+        NotFoundNameField = 134,
+        IsInValidForm = 135,
+        BadRequestDefault=136
     }
 }

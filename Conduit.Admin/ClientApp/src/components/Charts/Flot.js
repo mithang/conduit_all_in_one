@@ -4,13 +4,13 @@ import PropTypes from 'prop-types';
 import deepEqual from 'deep-equal';
 
 // Flot Charts
-import 'flot/jquery.flot.js';
-import 'flot/jquery.flot.categories.js';
-import 'flot/jquery.flot.pie.js';
-import 'flot/jquery.flot.resize.js';
-import 'flot/jquery.flot.time.js';
-import 'jquery.flot.spline/jquery.flot.spline.js';
-import 'jquery.flot.tooltip/js/jquery.flot.tooltip.min.js';
+import 'flot';
+import 'flot/jquery.flot.categories';
+import 'flot/jquery.flot.pie';
+import 'flot/jquery.flot.resize';
+import 'flot/jquery.flot.time';
+import 'jquery.flot.spline/jquery.flot.spline';
+import 'jquery.flot.tooltip/js/jquery.flot.tooltip.min';
 
 /**
  * Wrapper component for jquery-flot plugin

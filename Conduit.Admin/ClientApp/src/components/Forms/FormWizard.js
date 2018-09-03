@@ -3,8 +3,8 @@ import ContentWrapper from '../Layout/ContentWrapper';
 import { Card, CardHeader, CardBody, Input } from 'reactstrap';
 import $ from 'jquery';
 // Wizard (jquery.steps)
-import 'jquery-validation/dist/jquery.validate.js';
-import 'jquery-steps/build/jquery.steps.min.js';
+import 'jquery-validation';
+import 'jquery-steps/build/jquery.steps.min';
 
 
 class FormWizard extends Component {

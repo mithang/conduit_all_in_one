@@ -6,7 +6,7 @@ import $ from 'jquery';
 import * as CONST from '../Common/constants';
 import EasyPieChart from 'easy-pie-chart';
 // Knob charts
-import 'jquery-knob/js/jquery.knob.js';
+import 'jquery-knob/js/jquery.knob';
 
 class ChartRadial extends Component {
 

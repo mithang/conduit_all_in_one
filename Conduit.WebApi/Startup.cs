@@ -102,6 +102,7 @@ namespace Conduit.WebApi
             services.AddSwaggerGen(option =>
             {
                 option.SwaggerDoc("ConduitApi", new Swashbuckle.AspNetCore.Swagger.Info { Title = "Conduit API", Version = "v1" });
+                //Nếu route bị trùng thì lấy route đầu tiên
                 //option.ResolveConflictingActions(apiDescriptions => apiDescriptions.First());
                 //Thêm authentication vào swagger
                 option.AddSecurityDefinition("Bearer", new ApiKeyScheme { In = "header", Description = "Please enter JWT with Bearer into field", Name = "Authorization", Type = "apiKey" });
@@ -162,8 +163,8 @@ namespace Conduit.WebApi
                 app.UseDeveloperExceptionPage();
             }
 
-            //Đảm bảo db sẽ được tạo trước khi dùng
-            context.EnsureSeedDataForContext();
+            //Đảm bảo db sẽ được tạo trước khi dùng, Chú ý chỉ chạy một lần thôi rồi đóng lại
+            //context.EnsureSeedDataForContext();
 
             //Dùng Cors với tên AllowAll
             app.UseCors("AllowAll");

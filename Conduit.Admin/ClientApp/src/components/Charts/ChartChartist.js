@@ -3,7 +3,7 @@ import ContentWrapper from '../Layout/ContentWrapper';
 import { Container, Row, Col, Card, CardHeader, CardBody } from 'reactstrap';
 
 // Chartist
-import 'matchmedia/index.js';
+import 'matchmedia';
 import 'chartist/dist/chartist.min.css';
 import ChartistGraph from 'react-chartist';
 

@@ -2,9 +2,9 @@ import React, { Component } from 'react';
 import ContentWrapper from '../Layout/ContentWrapper';
 import { Container, Row, Col, Card, CardHeader, CardBody } from 'reactstrap';
 
-import Sparkline from '../Common/Sparklines.js';
+import Sparkline from '../Common/Sparklines';
 import FlotChart from './Flot';
-import { ChartSpline, ChartArea, ChartBar, ChartBarStacked, ChartDonut, ChartLine, ChartPie } from './ChartFlot.setup.js';
+import { ChartSpline, ChartArea, ChartBar, ChartBarStacked, ChartDonut, ChartLine, ChartPie } from './ChartFlot.setup';
 
 class ChartFlot extends Component {
 

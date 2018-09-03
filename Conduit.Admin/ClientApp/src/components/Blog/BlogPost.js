@@ -4,7 +4,7 @@ import { Row, Col, Card, CardHeader, CardBody } from 'reactstrap';
 import $ from 'jquery';
 // JQ Cloud
 import 'jqcloud2/dist/jqcloud.css';
-import 'jqcloud2/dist/jqcloud.js';
+import 'jqcloud2';
 
 class BlogPost extends Component {
 

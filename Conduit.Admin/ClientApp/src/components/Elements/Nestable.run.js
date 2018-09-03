@@ -1,6 +1,6 @@
 import $ from 'jquery';
 // Nestable
-import 'nestable/jquery.nestable.js';
+import 'nestable/jquery.nestable';
 
 export default () => {
     if (!$.fn.nestable) return;

@@ -4,7 +4,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import $ from 'jquery';
 // Sparklines
-import 'jquery-sparkline/jquery.sparkline.min.js';
+import 'jquery-sparkline/jquery.sparkline.min';
 
 const RESIZE_EVENT = 'resize.sparkline';
 

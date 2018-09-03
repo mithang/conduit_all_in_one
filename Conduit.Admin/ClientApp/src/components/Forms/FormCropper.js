@@ -4,7 +4,7 @@ import { Container, Row, Col } from 'reactstrap';
 import $ from 'jquery';
 // Image Cropper
 import 'cropper/dist/cropper.css';
-import 'cropper/dist/cropper.js';
+import 'cropper/dist/cropper';
 
 class FormCropper extends Component {
 

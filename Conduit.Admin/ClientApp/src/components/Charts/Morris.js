@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 // Morris.js
 import 'morris.js.so/morris.css';
-import 'morris.js.so/morris.js';
+import 'morris.js.so/morris';
 
 /**
  * Wrapper for morris chart plugin

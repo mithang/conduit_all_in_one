@@ -2,16 +2,18 @@
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
+using System.Dynamic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using Conduit.Business.Helpers;
+using Conduit.Business.Messages;
 using Conduit.Business.Services;
 using Conduit.Common.Dto;
 using Conduit.Domain;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
-
+using Conduit.WebApi.Extensions;
 namespace Conduit.WebApi.Controllers
 {
     //1.Full Path Link cho author
@@ -46,19 +48,21 @@ namespace Conduit.WebApi.Controllers
         public IActionResult GetAuthors(AuthorsResourceParameters authorsResourceParameters,
             [FromHeader(Name = "Accept")] string mediaType)
         {
+            
             //Chạy web dạng console sẽ thấy log ra
             _logger.LogError("OK");
             //Kiểm tra tham số tên cần sắp xếp(order by) có phải thuộc tính của Author
             if (!_propertyMappingService.ValidMappingExistsFor<AuthorDto, Author>
                (authorsResourceParameters.OrderBy))
             {
-                return BadRequest();
+
+                return BadRequest(this.BadRequestOrderByExtention<Author>(authorsResourceParameters.OrderBy));
             }
             //Kiểm tra tham số tên cần lấy có phải thuộc tính của Author
             if (!_typeHelperService.TypeHasProperties<AuthorDto>
                 (authorsResourceParameters.Fields))
             {
-                return BadRequest();
+                return BadRequest(this.BadRequestNotFindFieldExtention<Author>());
             }
             //Lấy dữ liệu từ tham số truyền vào
             var authorsFromRepo = _libraryRepository.GetAuthors(authorsResourceParameters);
@@ -67,7 +71,7 @@ namespace Conduit.WebApi.Controllers
             //var authors = Mapper.Map<IEnumerable<AuthorDto>>(authorsFromRepo);
             //Khi dùng Profile Mapper thì là _mapper.Map<IEnumerable<AuthorDto>>(authorsFromRepo);
             var authors = _mapper.Map<IEnumerable<AuthorDto>>(authorsFromRepo);
-
+            
             if (mediaType == "application/vnd.marvin.hateoas+json")
             {
                 var paginationMetadata = new
@@ -128,11 +132,10 @@ namespace Conduit.WebApi.Controllers
                 Response.Headers.Add("X-Pagination",
                     Newtonsoft.Json.JsonConvert.SerializeObject(paginationMetadata));
 
-                return Ok(authors.ShapeData(authorsResourceParameters.Fields));
+                return Ok(this.OkDefaultExtention<IEnumerable<ExpandoObject>>(authors.ShapeData(authorsResourceParameters.Fields)));
             }
         }
 
-        
         [HttpGet]
         [Route("GetAuthor/{id}")]
         public IActionResult GetAuthor(Guid id, [FromQuery] string fields)
@@ -140,14 +143,15 @@ namespace Conduit.WebApi.Controllers
             if (!_typeHelperService.TypeHasProperties<AuthorDto>
               (fields))
             {
-                return BadRequest();
+                return BadRequest(this.BadRequestNotFindFieldExtention<Author>());
             }
 
             var authorFromRepo = _libraryRepository.GetAuthor(id);
 
             if (authorFromRepo == null)
             {
-                return NotFound();
+                //return NotFound();
+                return BadRequest(this.BadRequestNotDataExtention<Author>(id));
             }
 
             var author = _mapper.Map<AuthorDto>(authorFromRepo);
@@ -159,7 +163,7 @@ namespace Conduit.WebApi.Controllers
 
             linkedResourceToReturn.Add("links", links);
 
-            return Ok(linkedResourceToReturn);
+            return Ok(this.OkDefaultExtention<ExpandoObject>(linkedResourceToReturn));
         }
 
         [HttpPost]
@@ -170,17 +174,22 @@ namespace Conduit.WebApi.Controllers
         {
             if (author == null)
             {
-                return BadRequest();
+                return BadRequest(this.BadRequestInvalidFormExtention<Author>(new UnprocessableEntityObjectResult(ModelState)));
             }
-
+            //Kiểm tra model AuthorForCreationDto có họp lệ không
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(this.BadRequestInvalidFormExtention<Author>(new UnprocessableEntityObjectResult(ModelState)));
+            }
             var authorEntity = _mapper.Map<Author>(author);
 
             _libraryRepository.AddAuthor(authorEntity);
 
             if (!_libraryRepository.Save())
             {
-                throw new Exception("Creating an author failed on save.");
+                //throw new Exception("Creating an author failed on save.");
                 // return StatusCode(500, "A problem happened with handling your request.");
+                return BadRequest(this.BadRequestDefaultExtention<Author>());
             }
 
             var authorToReturn = _mapper.Map<AuthorDto>(authorEntity);
@@ -192,9 +201,10 @@ namespace Conduit.WebApi.Controllers
 
             linkedResourceToReturn.Add("links", links);
 
-            return CreatedAtRoute("GetAuthor",
-                new { id = linkedResourceToReturn["Id"] },
-                linkedResourceToReturn);
+//            return CreatedAtRoute("GetAuthor",
+//                new { id = linkedResourceToReturn["Id"] },
+//                linkedResourceToReturn);
+            return Ok(this.OkDefaultExtention<ExpandoObject>(linkedResourceToReturn));
         }
 
 
@@ -209,16 +219,20 @@ namespace Conduit.WebApi.Controllers
         {
             if (author == null)
             {
-                return BadRequest();
+                return BadRequest(this.BadRequestInvalidFormExtention<Author>(new UnprocessableEntityObjectResult(ModelState)));
             }
-
-            var authorEntity = Mapper.Map<Author>(author);
+            //Kiểm tra model AuthorForCreationWithDateOfDeathDto có họp lệ không
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(this.BadRequestInvalidFormExtention<Author>(new UnprocessableEntityObjectResult(ModelState)));
+            }
+            var authorEntity = _mapper.Map<Author>(author);
 
             _libraryRepository.AddAuthor(authorEntity);
 
             if (!_libraryRepository.Save())
             {
-                throw new Exception("Creating an author failed on save.");
+                return BadRequest(this.BadRequestDefaultExtention<Author>());
                 // return StatusCode(500, "A problem happened with handling your request.");
             }
 
@@ -231,9 +245,75 @@ namespace Conduit.WebApi.Controllers
 
             linkedResourceToReturn.Add("links", links);
 
-            return CreatedAtRoute("GetAuthor",
-                new { id = linkedResourceToReturn["Id"] },
-                linkedResourceToReturn);
+//            return CreatedAtRoute("GetAuthor",
+//                new { id = linkedResourceToReturn["Id"] },
+//                linkedResourceToReturn);
+            return Ok(this.OkDefaultExtention<ExpandoObject>(linkedResourceToReturn));
+        }
+
+
+        [HttpPut]
+        [Route("UpdateAuthor/{authorId}")]
+        public IActionResult UpdateAuthor(Guid authorId,
+            [FromBody] AuthorForCreationWithDateOfDeathDto author)
+        {
+            if (author == null)
+            {
+                return BadRequest(this.BadRequestInvalidFormExtention<Author>(new UnprocessableEntityObjectResult(ModelState)));
+            }
+
+//            if (book.Description == book.Title)
+//            {
+//                ModelState.AddModelError(nameof(BookForUpdateDto),
+//                    "The provided description should be different from the title.");
+//            }
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(this.BadRequestInvalidFormExtention<Author>(new UnprocessableEntityObjectResult(ModelState)));
+            }
+
+
+            if (!_libraryRepository.AuthorExists(authorId))
+            {
+                //return NotFound();
+                return BadRequest(this.BadRequestNotDataExtention<Author>(authorId));
+            }
+
+            var authorReturn = _libraryRepository.GetAuthor(authorId);
+            if (authorReturn == null)
+            {
+                var authorAdd = _mapper.Map<Author>(author);
+                authorAdd.Id = authorId;
+
+                _libraryRepository.AddAuthor(authorId, authorAdd);
+
+                if (!_libraryRepository.Save())
+                {
+                    //throw new Exception($"Upserting book {authorId} for author {authorId} failed on save.");
+                    return BadRequest(this.BadRequestDefaultExtention<Author>());
+                }
+
+                var bookToReturn = _mapper.Map<BookDto>(authorAdd);
+//
+//                return CreatedAtRoute("GetBookForAuthor",
+//                    new { authorId = authorId, id = bookToReturn.Id },
+//                    bookToReturn);
+                return Ok(this.OkDefaultExtention<ExpandoObject>(bookToReturn));
+            }
+
+            _mapper.Map(author, authorReturn);
+
+            _libraryRepository.UpdateAuthor(authorReturn);
+
+            if (!_libraryRepository.Save())
+            {
+                //throw new Exception($"Updating book {authorId} for author {authorId} failed on save.");
+                return BadRequest(this.BadRequestDefaultExtention<Author>());
+            }
+
+            //return NoContent();
+            return Ok(this.OkDefaultExtention<ExpandoObject>(authorReturn));
         }
 
         [HttpPost]
@@ -255,17 +335,20 @@ namespace Conduit.WebApi.Controllers
             var authorFromRepo = _libraryRepository.GetAuthor(id);
             if (authorFromRepo == null)
             {
-                return NotFound();
+                //return NotFound();
+                return BadRequest(this.BadRequestNotDataExtention<Author>(id));
             }
 
             _libraryRepository.DeleteAuthor(authorFromRepo);
 
             if (!_libraryRepository.Save())
             {
-                throw new Exception($"Deleting author {id} failed on save.");
+                //throw new Exception($"Deleting author {id} failed on save.");
+                return BadRequest(this.BadRequestDefaultExtention<Author>());
             }
 
-            return NoContent();
+            //return NoContent();
+            return Ok(this.OkDefaultExtention<ExpandoObject>(authorFromRepo));
         }
         //Tạo tất cả link tương tác với model
         private IEnumerable<LinkDto> CreateLinksForAuthor(Guid id, string fields)

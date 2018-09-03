@@ -5,7 +5,7 @@ import { Collapse, Badge } from 'reactstrap';
 import SidebarRun from './Sidebar.run';
 import SidebarUserBlock from './SidebarUserBlock';
 
-import Menu from '../../Menu.js';
+import Menu from '../../Menu';
 
 /** Component to display headings on sidebar */
 const SidebarItemHeader = ({item}) => (
