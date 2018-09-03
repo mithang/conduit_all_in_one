@@ -102,6 +102,8 @@ namespace Conduit.WebApi
             services.AddSwaggerGen(option =>
             {
                 option.SwaggerDoc("ConduitApi", new Swashbuckle.AspNetCore.Swagger.Info { Title = "Conduit API", Version = "v1" });
+                //option.ResolveConflictingActions(apiDescriptions => apiDescriptions.First());
+                //Thêm authentication vào swagger
                 option.AddSecurityDefinition("Bearer", new ApiKeyScheme { In = "header", Description = "Please enter JWT with Bearer into field", Name = "Authorization", Type = "apiKey" });
                 option.AddSecurityRequirement(new Dictionary<string, IEnumerable<string>> {
                     { "Bearer", Enumerable.Empty<string>() },
@@ -177,9 +179,18 @@ namespace Conduit.WebApi
                 option.SwaggerEndpoint("/swagger/ConduitApi/swagger.json", "Conduit API");
 
             });
-           
-            app.UseMvc();
 
+//            app.UseMvc(routes =>
+//            {
+//                routes.MapRoute(
+//                    name: "default",
+//                    template: "{controller=Home}/{action=Index}/{id?}");
+//
+//                routes.MapSpaFallbackRoute(
+//                    name: "spa-fallback",
+//                    defaults: new { controller = "Home", action = "Index" });
+//            });
+            app.UseMvc();
         }
     }
 }

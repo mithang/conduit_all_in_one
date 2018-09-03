@@ -17,7 +17,8 @@ namespace Conduit.WebApi.Controllers
     //1.Full Path Link cho author
     //http://localhost:6058/api/authors?pagenumber=1&pagesize=2&orderby=genre&fields=name,id&searchquery=g
     //2.Ghi log  _logger.LogError("OK");
-    [Route("api/authors")]
+    //[Route("api/authors")]
+    [Route("api/[controller]")]
     public class AuthorsController : Controller
     {
         private ILibraryRepository _libraryRepository;
@@ -38,9 +39,10 @@ namespace Conduit.WebApi.Controllers
             _logger = logger;
             _mapper = mapper;
         }
-
-        [HttpGet(Name = "GetAuthors")]
-        [HttpHead]
+        //Chú ý nên đặt [Route("GetAuthors")] thay cho Name trong Http như [HttpGet(Name = "GetAuthors")]
+        [HttpGet]//Dùng Get để lấy danh sách
+        [HttpHead]//Dùng Head để lấy danh sách
+        [Route("GetAuthors")]//Đặt tên cho Route cần truy cập
         public IActionResult GetAuthors(AuthorsResourceParameters authorsResourceParameters,
             [FromHeader(Name = "Accept")] string mediaType)
         {
@@ -129,92 +131,10 @@ namespace Conduit.WebApi.Controllers
                 return Ok(authors.ShapeData(authorsResourceParameters.Fields));
             }
         }
-//        [HttpPost(Name = "CreateAuthor")]
-//        public IActionResult CreateAuthor(Guid authorId,
-//            [FromBody] AuthorDto author)
-//        {
-//            if (author == null)
-//            {
-//                return BadRequest();
-//            }
-//
-////            if (book.Description == book.Title)
-////            {
-////                ModelState.AddModelError(nameof(BookForCreationDto),
-////                    "The provided description should be different from the title.");
-////            }
-//
-//            if (!ModelState.IsValid)
-//            {
-//                // return 422
-//                return new UnprocessableEntityObjectResult(ModelState);
-//            }
-//
-////            if (!_libraryRepository.AuthorExists(authorId))
-////            {
-////                return NotFound();
-////            }
-//
-//            var authorEntity = _mapper.Map<Author>(author);
-//
-//            _libraryRepository.AddAuthor(authorId, authorEntity);
-//
-//            if (!_libraryRepository.Save())
-//            {
-//                throw new Exception($"Creating a book for author {authorId} failed on save.");
-//            }
-//
-//            var authorToReturn = _mapper.Map<AuthorDto>(authorEntity);
-//
-////            return CreatedAtRoute("GetBookForAuthor",
-////                new { authorId = authorId, id = authorToReturn.Id },
-////                CreateLinksForAuthor(authorToReturn));
-//            return Ok(authorToReturn);
-//        }
-        private string CreateAuthorsResourceUri(
-            AuthorsResourceParameters authorsResourceParameters,
-            ResourceUriType type)
-        {
-            switch (type)
-            {
-                case ResourceUriType.PreviousPage:
-                    return _urlHelper.Link("GetAuthors",
-                      new
-                      {
-                          fields = authorsResourceParameters.Fields,
-                          orderBy = authorsResourceParameters.OrderBy,
-                          searchQuery = authorsResourceParameters.SearchQuery,
-                          genre = authorsResourceParameters.Genre,
-                          pageNumber = authorsResourceParameters.PageNumber - 1,
-                          pageSize = authorsResourceParameters.PageSize
-                      });
-                case ResourceUriType.NextPage:
-                    return _urlHelper.Link("GetAuthors",
-                      new
-                      {
-                          fields = authorsResourceParameters.Fields,
-                          orderBy = authorsResourceParameters.OrderBy,
-                          searchQuery = authorsResourceParameters.SearchQuery,
-                          genre = authorsResourceParameters.Genre,
-                          pageNumber = authorsResourceParameters.PageNumber + 1,
-                          pageSize = authorsResourceParameters.PageSize
-                      });
-                case ResourceUriType.Current:
-                default:
-                    return _urlHelper.Link("GetAuthors",
-                    new
-                    {
-                        fields = authorsResourceParameters.Fields,
-                        orderBy = authorsResourceParameters.OrderBy,
-                        searchQuery = authorsResourceParameters.SearchQuery,
-                        genre = authorsResourceParameters.Genre,
-                        pageNumber = authorsResourceParameters.PageNumber,
-                        pageSize = authorsResourceParameters.PageSize
-                    });
-            }
-        }
 
-        [HttpGet("{id}", Name = "GetAuthor")]
+        
+        [HttpGet]
+        [Route("GetAuthor/{id}")]
         public IActionResult GetAuthor(Guid id, [FromQuery] string fields)
         {
             if (!_typeHelperService.TypeHasProperties<AuthorDto>
@@ -242,7 +162,8 @@ namespace Conduit.WebApi.Controllers
             return Ok(linkedResourceToReturn);
         }
 
-        [HttpPost(Name = "CreateAuthor")]
+        [HttpPost]
+        [Route("CreateAuthor")]
         //[RequestHeaderMatchesMediaType("Content-Type",
         //    new[] { "application/vnd.marvin.author.full+json" })]
         public IActionResult CreateAuthor([FromBody] AuthorForCreationDto author)
@@ -277,44 +198,46 @@ namespace Conduit.WebApi.Controllers
         }
 
 
-//        [HttpPost(Name = "CreateAuthorWithDateOfDeath")]
-//        //[RequestHeaderMatchesMediaType("Content-Type",
-//        //    new[] { "application/vnd.marvin.authorwithdateofdeath.full+json",
-//        //            "application/vnd.marvin.authorwithdateofdeath.full+xml" })]
-//        // [RequestHeaderMatchesMediaType("Accept", new[] { "..." })]
-//        public IActionResult CreateAuthorWithDateOfDeath(
-//            [FromBody] AuthorForCreationWithDateOfDeathDto author)
-//        {
-//            if (author == null)
-//            {
-//                return BadRequest();
-//            }
-//
-//            var authorEntity = Mapper.Map<Author>(author);
-//
-//            _libraryRepository.AddAuthor(authorEntity);
-//
-//            if (!_libraryRepository.Save())
-//            {
-//                throw new Exception("Creating an author failed on save.");
-//                // return StatusCode(500, "A problem happened with handling your request.");
-//            }
-//
-//            var authorToReturn = _mapper.Map<AuthorDto>(authorEntity);
-//
-//            var links = CreateLinksForAuthor(authorToReturn.Id, null);
-//
-//            var linkedResourceToReturn = authorToReturn.ShapeData(null)
-//                as IDictionary<string, object>;
-//
-//            linkedResourceToReturn.Add("links", links);
-//
-//            return CreatedAtRoute("GetAuthor",
-//                new { id = linkedResourceToReturn["Id"] },
-//                linkedResourceToReturn);
-//        }
+        [HttpPost]
+        [Route("CreateAuthorWithDateOfDeath")]
+        //[RequestHeaderMatchesMediaType("Content-Type",
+        //    new[] { "application/vnd.marvin.authorwithdateofdeath.full+json",
+        //            "application/vnd.marvin.authorwithdateofdeath.full+xml" })]
+        // [RequestHeaderMatchesMediaType("Accept", new[] { "..." })]
+        public IActionResult CreateAuthorWithDateOfDeath(
+            [FromBody] AuthorForCreationWithDateOfDeathDto author)
+        {
+            if (author == null)
+            {
+                return BadRequest();
+            }
 
-        [HttpPost("{id}")]
+            var authorEntity = Mapper.Map<Author>(author);
+
+            _libraryRepository.AddAuthor(authorEntity);
+
+            if (!_libraryRepository.Save())
+            {
+                throw new Exception("Creating an author failed on save.");
+                // return StatusCode(500, "A problem happened with handling your request.");
+            }
+
+            var authorToReturn = _mapper.Map<AuthorDto>(authorEntity);
+
+            var links = CreateLinksForAuthor(authorToReturn.Id, null);
+
+            var linkedResourceToReturn = authorToReturn.ShapeData(null)
+                as IDictionary<string, object>;
+
+            linkedResourceToReturn.Add("links", links);
+
+            return CreatedAtRoute("GetAuthor",
+                new { id = linkedResourceToReturn["Id"] },
+                linkedResourceToReturn);
+        }
+
+        [HttpPost]
+        [Route("BlockAuthorCreation/{id}")]
         public IActionResult BlockAuthorCreation(Guid id)
         {
             if (_libraryRepository.AuthorExists(id))
@@ -325,7 +248,8 @@ namespace Conduit.WebApi.Controllers
             return NotFound();
         }
 
-        [HttpDelete("{id}", Name = "DeleteAuthor")]
+        [HttpDelete]
+        [Route("DeleteAuthor/{id}")]
         public IActionResult DeleteAuthor(Guid id)
         {
             var authorFromRepo = _libraryRepository.GetAuthor(id);
@@ -417,6 +341,50 @@ namespace Conduit.WebApi.Controllers
         {
             Response.Headers.Add("Allow", "GET,OPTIONS,POST");
             return Ok();
+        }
+
+        //Tạo resource phân trang
+        private string CreateAuthorsResourceUri(
+            AuthorsResourceParameters authorsResourceParameters,
+            ResourceUriType type)
+        {
+            switch (type)
+            {
+                case ResourceUriType.PreviousPage:
+                    return _urlHelper.Link("GetAuthors",
+                      new
+                      {
+                          fields = authorsResourceParameters.Fields,
+                          orderBy = authorsResourceParameters.OrderBy,
+                          searchQuery = authorsResourceParameters.SearchQuery,
+                          genre = authorsResourceParameters.Genre,
+                          pageNumber = authorsResourceParameters.PageNumber - 1,
+                          pageSize = authorsResourceParameters.PageSize
+                      });
+                case ResourceUriType.NextPage:
+                    return _urlHelper.Link("GetAuthors",
+                      new
+                      {
+                          fields = authorsResourceParameters.Fields,
+                          orderBy = authorsResourceParameters.OrderBy,
+                          searchQuery = authorsResourceParameters.SearchQuery,
+                          genre = authorsResourceParameters.Genre,
+                          pageNumber = authorsResourceParameters.PageNumber + 1,
+                          pageSize = authorsResourceParameters.PageSize
+                      });
+                case ResourceUriType.Current:
+                default:
+                    return _urlHelper.Link("GetAuthors",
+                    new
+                    {
+                        fields = authorsResourceParameters.Fields,
+                        orderBy = authorsResourceParameters.OrderBy,
+                        searchQuery = authorsResourceParameters.SearchQuery,
+                        genre = authorsResourceParameters.Genre,
+                        pageNumber = authorsResourceParameters.PageNumber,
+                        pageSize = authorsResourceParameters.PageSize
+                    });
+            }
         }
     }
 }
