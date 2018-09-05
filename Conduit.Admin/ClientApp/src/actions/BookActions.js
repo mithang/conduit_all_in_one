@@ -7,9 +7,10 @@ import {
     LOGIN_INFO_USER,
     USERS_FETCH_SUCCESS,
     USERS_FETCH_FAIL,
-    USERS_FETCHING
+    USERS_FETCHING,
+    USERS_DELETE_FETCH_SUCCESS
   } from "./types";
-  import { GetAuthors } from './../apis/BookApi';
+  import { GetAuthors,DeleteAuthor } from './../apis/BookApi';
   import {PageHelper} from './../utils/PageHelper';
   export const fullNameChanged = text => {
     return {
@@ -18,19 +19,6 @@ import {
     };
   };
   
-  export const addressChanged = text => {
-    return {
-      type: ADDRESS_CHANGED,
-      payload: text,
-    };
-  };
-  
-  export const bankChanged = text => {
-    return {
-      type: BANK_CHANGED,
-      payload: text,
-    };
-  };
   
   export const addUser = ({ fullname, address, bank }) => {
     return dispatch => {
@@ -66,11 +54,25 @@ import {
         var pagination=  new PageHelper(authors.headers["x-pagination"]).getPage()
         dispatch({
           type: USERS_FETCH_SUCCESS,
-          payload: authors.data,
+          payload: authors.data.result,
           page:pagination
         });
       }).catch(e=>{
-        dispatch({ type: USERS_FETCH_FAIL });
+        dispatch({ type: USERS_FETCH_FAIL,payload: e.errors.message });
+      });
+    };
+  };
+  export const deleteAuthorAction = (id) => {
+    return dispatch => {
+      dispatch({ type: USERS_FETCHING });
+      DeleteAuthor(id).then(author=>{
+        dispatch({
+          type: USERS_DELETE_FETCH_SUCCESS,
+          payload: author.data.result,
+          id:id
+        });
+      }).catch(e=>{
+        dispatch({ type: USERS_FETCH_FAIL,payload: e.response.data.errors.message });
       });
     };
   };

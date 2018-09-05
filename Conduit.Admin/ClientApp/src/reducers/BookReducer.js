@@ -8,11 +8,12 @@ import {
     USERS_FETCHING,
     USERS_FETCH_SUCCESS,
     USERS_FETCH_FAIL,
+    USERS_DELETE_FETCH_SUCCESS
   } from "../actions/types";
   import { Page } from "../utils/PageHelper";
-  
+  import _ from 'lodash';
   const INITIAL_STATE = {
-    author: null,
+    author: {},
     error: "",
     loading: true,
     authors: [],
@@ -30,16 +31,12 @@ import {
         return { ...state, bank: action.payload };
       case LOGIN_INFO_USER:
         return { ...state, loading: true, error: "" };
-      case USER_INFO_SUCCESS:
-        return { ...state, ...INITIAL_STATE, user: action.payload };
-      case USER_INFO_FAIL:
-        return {
-          ...state,
-          error: "Chứng thực thất bại !",
-          author: "",
-          loading: false,
-        };
-      case USERS_FETCHING:
+      case USERS_DELETE_FETCH_SUCCESS:
+        var evens = _.remove(state.authors, (n)=> {
+          return n.Id != action.id;
+        });
+        return { ...state,authors:evens, author: action.payload, loading: false,error:"OKKKKK"};
+           case USERS_FETCHING:
         return { ...state, loading:true };
       case USERS_FETCH_SUCCESS:
         return { ...state, authors: action.payload, loading: false,page: action.page };

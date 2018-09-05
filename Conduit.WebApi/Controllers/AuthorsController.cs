@@ -348,7 +348,7 @@ namespace Conduit.WebApi.Controllers
             }
 
             //return NoContent();
-            return Ok(this.OkDefaultExtention<ExpandoObject>(authorFromRepo));
+            return Ok(this.OkDefaultExtention<Author>(authorFromRepo));
         }
         //Tạo tất cả link tương tác với model
         private IEnumerable<LinkDto> CreateLinksForAuthor(Guid id, string fields)

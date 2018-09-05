@@ -12,13 +12,15 @@ import {
 } from 'reactstrap';
 import { translate, Trans } from 'react-i18next';
 import { connect } from 'react-redux';
-import { getAuthorsAction } from './../../actions';
+import { getAuthorsAction,deleteAuthorAction } from './../../actions';
 import _ from 'lodash';
 import Pagination from "react-js-pagination";
 import 'loaders.css/loaders.css';
 import 'spinkit/css/spinkit.css';
 import './AuthorCSS.css';
 import AuthorItem from './AuthorItem';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 //https://reactjs.org/docs/forms.html
 class Author extends Component {
 
@@ -30,8 +32,12 @@ class Author extends Component {
         this.handleChange = this.handleChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
         this.state = {
-            searchquery: ''
+            searchquery: '',
+            modal: false,
+            toasterPos: 'top-right',
+            toasterType: 'info'
         }
+       
     }
 
     componentDidMount() {
@@ -40,8 +46,22 @@ class Author extends Component {
             .getAuthorsAction(1, 2);
 
     }
-    renderItem(item) {
+    notify = (str) => {
+        
+        toast(str, {
+            type: this.state.toasterType,
+            position: this.state.toasterPos
+        });
 
+    }
+    onDeleteItem(id){
+        
+        this.props.deleteAuthorAction(id)
+    }
+    renderItem(item) {
+        if(!_.isEmpty(this.props.error)){
+            this.notify(this.props.error)
+        }
         return (
             <tr className="gradeX" key={item.Name}>
                 <td>{item.Name}</td>
@@ -49,14 +69,14 @@ class Author extends Component {
                 <td>{item.Genre}</td>
                 <td>4</td>
                 <td>
-                    <Link className="btn btn-sm btn-secondary" to={`${this.props.match.url}/1`}>
+                    <Link className="btn btn-sm btn-secondary" to={ `${this.props.match.url}/1` }>
                         <em className="fas fa-pencil-alt"></em>
                         {/*Thêm*/}
                     </Link>
-                    <button type="button" className="btn btn-sm btn-danger">
+                    <button type="button" className="btn btn-sm btn-danger" onClick={()=>this.onDeleteItem(item.Id)}>
                         <em className="fas fa-trash-alt"></em>
                     </button>
-                
+                    <ToastContainer />
                 </td>
             </tr>
         );
@@ -182,13 +202,12 @@ class Author extends Component {
 
 //export default  translate('translations')(Author);
 const mapStateToProps = ({ books }) => {
-    const { authors, loading, page } = books;
-
-    return { authors, loading, page };
+    const { authors, loading, page, author, error } = books;
+    return { authors, loading, page, author, error };
 };
 
 const mapDispatchToProps = {
-    getAuthorsAction
+    getAuthorsAction,deleteAuthorAction
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Author);

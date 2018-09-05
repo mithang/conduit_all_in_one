@@ -164,7 +164,7 @@ namespace Conduit.WebApi
             }
 
             //Đảm bảo db sẽ được tạo trước khi dùng, Chú ý chỉ chạy một lần thôi rồi đóng lại
-            //context.EnsureSeedDataForContext();
+            context.EnsureSeedDataForContext();
 
             //Dùng Cors với tên AllowAll
             app.UseCors("AllowAll");

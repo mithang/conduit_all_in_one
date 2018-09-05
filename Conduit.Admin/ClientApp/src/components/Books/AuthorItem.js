@@ -2,7 +2,7 @@
 import React, { Component } from 'react';
 import ContentWrapper from '../Layout/ContentWrapper';
 import { Row, Col, Input, Card, CardHeader, CardBody, CardFooter, CustomInput } from 'reactstrap';
-import { Route,Link } from 'react-router-dom';
+import { Route, Link } from 'react-router-dom';
 import FormValidator from './../Forms/FormValidator';
 
 /**
@@ -23,7 +23,7 @@ class AuthorItem extends Component {
     state = {
         /* Group each form state in an object.
            Property name MUST match the form name */
-       
+
         formDemo: {
             text: '',
             email: '',
@@ -42,11 +42,11 @@ class AuthorItem extends Component {
         }
     }
 
-     /**
-      * Validate input using onChange event
-      * @param  {String} formName The name of the form in the state object
-      * @return {Function} a function used for the event
-      */
+    /**
+     * Validate input using onChange event
+     * @param  {String} formName The name of the form in the state object
+     * @return {Function} a function used for the event
+     */
     validateOnChange = event => {
         const input = event.target;
         const form = input.form
@@ -87,10 +87,10 @@ class AuthorItem extends Component {
 
     /* Simplify error check */
     hasError = (formName, inputName, method) => {
-        return  this.state[formName] &&
-                this.state[formName].errors &&
-                this.state[formName].errors[inputName] &&
-                this.state[formName].errors[inputName][method]
+        return this.state[formName] &&
+            this.state[formName].errors &&
+            this.state[formName].errors[inputName] &&
+            this.state[formName].errors[inputName][method]
     }
 
     render() {
@@ -104,62 +104,62 @@ class AuthorItem extends Component {
                         <Link className="btn btn-secondary" to={`/authors`}>Quay lại</Link>
                     </div>
                 </div>
-               
-                { /* START row */ }
+
+                { /* START row */}
                 <Row>
                     <div className="col-md-12">
                         <form onSubmit={this.onSubmit} action="" name="formDemo">
-                            { /* START card */ }
+                            { /* START card */}
                             <Card className="card-default">
-                               
+
                                 <CardBody>
-                                    
+
                                     <fieldset>
                                         <div className="form-group row align-items-center">
                                             <label className="col-md-2 col-form-label">Required Text</label>
-                                            <Col md={ 6 }>
+                                            <Col md={6}>
                                                 <Input type="text"
                                                     name="text"
-                                                    invalid={this.hasError('formDemo','text','required')}
+                                                    invalid={this.hasError('formDemo', 'text', 'required')}
                                                     onChange={this.validateOnChange}
                                                     data-validate='["required"]'
                                                     value={this.state.formDemo.text}
                                                 />
                                                 <span className="invalid-feedback">Field is required</span>
                                             </Col>
-                                            <Col md={ 4 }>
+                                            <Col md={4}>
                                             </Col>
                                         </div>
                                     </fieldset>
                                     <fieldset>
                                         <div className="form-group row align-items-center">
                                             <label className="col-md-2 col-form-label">Email</label>
-                                            <Col md={ 6 }>
+                                            <Col md={6}>
                                                 <Input type="email"
                                                     name="email"
-                                                    invalid={this.hasError('formDemo','email','required')||this.hasError('formDemo','email','email')}
+                                                    invalid={this.hasError('formDemo', 'email', 'required') || this.hasError('formDemo', 'email', 'email')}
                                                     onChange={this.validateOnChange}
                                                     data-validate='["required", "email"]'
-                                                    value={this.state.formDemo.email}/>
-                                                { this.hasError('formDemo','email','required') && <span className="invalid-feedback">Field is required</span> }
-                                                { this.hasError('formDemo','email','email') && <span className="invalid-feedback">Field must be valid email</span> }
+                                                    value={this.state.formDemo.email} />
+                                                {this.hasError('formDemo', 'email', 'required') && <span className="invalid-feedback">Field is required</span>}
+                                                {this.hasError('formDemo', 'email', 'email') && <span className="invalid-feedback">Field must be valid email</span>}
                                             </Col>
-                                            <Col md={ 4 }></Col>
+                                            <Col md={4}></Col>
                                         </div>
                                     </fieldset>
                                     <fieldset>
                                         <div className="form-group row align-items-center">
                                             <label className="col-md-2 col-form-label">Number</label>
-                                            <Col md={ 6 }>
+                                            <Col md={6}>
                                                 <Input type="text"
                                                     name="number"
-                                                    invalid={this.hasError('formDemo','number','number')}
+                                                    invalid={this.hasError('formDemo', 'number', 'number')}
                                                     onChange={this.validateOnChange}
                                                     data-validate='["number"]'
-                                                    value={this.state.formDemo.number}/>
+                                                    value={this.state.formDemo.number} />
                                                 <span className="invalid-feedback">Field must be valid number</span>
                                             </Col>
-                                            <Col md={ 4 }>
+                                            <Col md={4}>
                                             </Col>
                                         </div>
                                     </fieldset>
@@ -168,13 +168,13 @@ class AuthorItem extends Component {
                                     <button type="submit" className="btn btn-info">Lưu</button>
                                 </CardFooter>
                             </Card>
-                            { /* END card */ }
+                            { /* END card */}
                         </form>
                     </div>
                 </Row>
-                { /* END row */ }
+                { /* END row */}
             </div>
-            );
+        );
     }
 
 }

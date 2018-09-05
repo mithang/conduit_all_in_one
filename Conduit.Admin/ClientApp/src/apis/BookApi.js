@@ -10,4 +10,7 @@ export const GetInfoApp = (keyApp, token = "", os) =>
 
  
 export const GetAuthors = (page=1,size=2,searchquery='') =>
-  axios.get(`api/authors?pagenumber=${page}&pagesize=${size}&searchquery=${searchquery}`);
+  axios.get(`api/Authors/GetAuthors?pagenumber=${page}&pagesize=${size}&searchquery=${searchquery}`);
+
+export const DeleteAuthor = (id="") =>
+  axios.delete(`api/Authors/DeleteAuthor/${id}`);
