@@ -55,13 +55,14 @@ class Author extends Component {
 
     }
     onDeleteItem(id){
-        
+        this.notify(this.props.error||"kk")
         this.props.deleteAuthorAction(id)
     }
     renderItem(item) {
-        if(!_.isEmpty(this.props.error)){
-            this.notify(this.props.error)
-        }
+        // if(!_.isEmpty(this.props.error)){
+           
+        //     this.notify(this.props.error)
+        // }
         return (
             <tr className="gradeX" key={item.Name}>
                 <td>{item.Name}</td>

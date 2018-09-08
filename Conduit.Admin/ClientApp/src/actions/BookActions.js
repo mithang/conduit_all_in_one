@@ -12,6 +12,8 @@ import {
   } from "./types";
   import { GetAuthors,DeleteAuthor } from './../apis/BookApi';
   import {PageHelper} from './../utils/PageHelper';
+  import _ from 'lodash';
+  
   export const fullNameChanged = text => {
     return {
       type: FULLNAME_CHANGED,
@@ -58,7 +60,11 @@ import {
           page:pagination
         });
       }).catch(e=>{
-        dispatch({ type: USERS_FETCH_FAIL,payload: e.errors.message });
+        
+        if(!_.isUndefined(e.response))
+        {
+          dispatch({ type: USERS_FETCH_FAIL,payload: e.response.data.errors.message });
+        }
       });
     };
   };
@@ -72,7 +78,10 @@ import {
           id:id
         });
       }).catch(e=>{
-        dispatch({ type: USERS_FETCH_FAIL,payload: e.response.data.errors.message });
+        if(!_.isUndefined(e.response))
+        {
+          dispatch({ type: USERS_FETCH_FAIL,payload: e.response.data.errors.message });
+        }
       });
     };
   };
