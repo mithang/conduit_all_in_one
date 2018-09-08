@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Conduit.Business.Helpers;
 using Conduit.Domain;
 
@@ -7,8 +8,8 @@ namespace Conduit.Business.Services
 {
     public interface ILibraryRepository
     {
-        PagedList<Author> GetAuthors(AuthorsResourceParameters authorsResourceParameters);
-        Author GetAuthor(Guid authorId);
+        Task<PagedList<Author>> GetAuthors(AuthorsResourceParameters authorsResourceParameters);
+        Task<Author> GetAuthor(Guid authorId);
         IEnumerable<Author> GetAuthors(IEnumerable<Guid> authorIds);
         void AddAuthor(Author author);
         void DeleteAuthor(Author author);

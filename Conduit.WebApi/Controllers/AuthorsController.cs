@@ -18,7 +18,12 @@ namespace Conduit.WebApi.Controllers
 {
     //1.Full Path Link cho author
     //http://localhost:6058/api/authors?pagenumber=1&pagesize=2&orderby=genre&fields=name,id&searchquery=g
+    //Da sua Route: http://localhost:58161/api/Authors/GetAuthors?pagenumber=2&pagesize=2&orderby=genre&fields=name,id&searchquery=g
     //2.Ghi log  _logger.LogError("OK");
+    //3.Phan trang EF
+    //https://gunnarpeipman.com/net/ef-core-paging/
+    //https://www.carlrippon.com/scalable-and-performant-asp-net-core-web-apis-paging/
+    //Nen dung Dapper: https://github.com/StackExchange/Dapper
     //[Route("api/authors")]
     [Route("api/[controller]")]
     public class AuthorsController : Controller
@@ -45,10 +50,10 @@ namespace Conduit.WebApi.Controllers
         [HttpGet]//Dùng Get để lấy danh sách
         [HttpHead]//Dùng Head để lấy danh sách
         [Route("GetAuthors")]//Đặt tên cho Route cần truy cập
-        public IActionResult GetAuthors(AuthorsResourceParameters authorsResourceParameters,
+        public async Task<IActionResult> GetAuthors(AuthorsResourceParameters authorsResourceParameters,
             [FromHeader(Name = "Accept")] string mediaType)
         {
-            
+
             //Chạy web dạng console sẽ thấy log ra
             _logger.LogError("OK");
             //Kiểm tra tham số tên cần sắp xếp(order by) có phải thuộc tính của Author
@@ -65,7 +70,7 @@ namespace Conduit.WebApi.Controllers
                 return BadRequest(this.BadRequestNotFindFieldExtention<Author>());
             }
             //Lấy dữ liệu từ tham số truyền vào
-            var authorsFromRepo = _libraryRepository.GetAuthors(authorsResourceParameters);
+            var authorsFromRepo = await _libraryRepository.GetAuthors(authorsResourceParameters);
 
             //Áp dụng khi dùng Mapper mà cấu hình trực tiếp trong StartUp, bên dưới là cấu hình profile
             //var authors = Mapper.Map<IEnumerable<AuthorDto>>(authorsFromRepo);
@@ -138,7 +143,7 @@ namespace Conduit.WebApi.Controllers
 
         [HttpGet]
         [Route("GetAuthor/{id}")]
-        public IActionResult GetAuthor(Guid id, [FromQuery] string fields)
+        public async Task<IActionResult> GetAuthor(Guid id, [FromQuery] string fields)
         {
             if (!_typeHelperService.TypeHasProperties<AuthorDto>
               (fields))
@@ -146,7 +151,7 @@ namespace Conduit.WebApi.Controllers
                 return BadRequest(this.BadRequestNotFindFieldExtention<Author>());
             }
 
-            var authorFromRepo = _libraryRepository.GetAuthor(id);
+            var authorFromRepo = await _libraryRepository.GetAuthor(id);
 
             if (authorFromRepo == null)
             {
@@ -254,7 +259,7 @@ namespace Conduit.WebApi.Controllers
 
         [HttpPut]
         [Route("UpdateAuthor/{authorId}")]
-        public IActionResult UpdateAuthor(Guid authorId,
+        public async Task<IActionResult> UpdateAuthor(Guid authorId,
             [FromBody] AuthorForCreationWithDateOfDeathDto author)
         {
             if (author == null)
@@ -280,7 +285,7 @@ namespace Conduit.WebApi.Controllers
                 return BadRequest(this.BadRequestNotDataExtention<Author>(authorId));
             }
 
-            var authorReturn = _libraryRepository.GetAuthor(authorId);
+            var authorReturn =await _libraryRepository.GetAuthor(authorId);
             if (authorReturn == null)
             {
                 var authorAdd = _mapper.Map<Author>(author);
@@ -330,9 +335,9 @@ namespace Conduit.WebApi.Controllers
 
         [HttpDelete]
         [Route("DeleteAuthor/{id}")]
-        public IActionResult DeleteAuthor(Guid id)
+        public async Task<IActionResult> DeleteAuthor(Guid id)
         {
-            var authorFromRepo = _libraryRepository.GetAuthor(id);
+            var authorFromRepo = await _libraryRepository.GetAuthor(id);
             if (authorFromRepo == null)
             {
                 //return NotFound();

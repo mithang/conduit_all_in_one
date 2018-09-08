@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Conduit.Business.Helpers;
 using Conduit.Common.Dto;
 using Conduit.Data;
 using Conduit.Domain;
+using Microsoft.EntityFrameworkCore;
 
 namespace Conduit.Business.Services
 {
@@ -35,9 +37,9 @@ namespace Conduit.Business.Services
             }
         }
 
-        public void AddBookForAuthor(Guid authorId, Book book)
+        public async void AddBookForAuthor(Guid authorId, Book book)
         {
-            var author = GetAuthor(authorId);
+            var author = await GetAuthor(authorId);
             if (author != null)
             {
                 // if there isn't an id filled out (ie: we're not upserting),
@@ -65,17 +67,45 @@ namespace Conduit.Business.Services
             _context.Books.Remove(book);
         }
 
-        public Author GetAuthor(Guid authorId)
+        public async Task<Author> GetAuthor(Guid authorId)
         {
-            return _context.Authors.FirstOrDefault(a => a.Id == authorId);
+            return await _context.Authors.FirstOrDefaultAsync(a => a.Id == authorId);
         }
 
-        public PagedList<Author> GetAuthors(
+        public async Task<PagedList<Author>> GetAuthors(
             AuthorsResourceParameters authorsResourceParameters)
         {
-            //var collectionBeforePaging = _context.Authors
-            //    .OrderBy(a => a.FirstName)
-            //    .ThenBy(a => a.LastName).AsQueryable();
+            //C1:
+            //            var query = _context.Set<Author>();
+            //            var page = query.OrderBy(e => e.Id)
+            //                .Select(e => e)
+            //                .Skip(1).Take(2)
+            //                .GroupBy(e => new { Total = query.Count() })
+            //                .FirstOrDefault();
+            //
+            //            if (page != null)
+            //            {
+            //                int total = page.Key.Total;
+            //                List<Author> events = page.Select(e => e).ToList();
+            //            }
+            //C2:
+//            ViewBag.PageNumber = pageNumber;
+//            const int pageSize = 25;
+//            DateTime twoDaysAgo = DateTime.Now.AddDays(-2);
+//            var groupSummaries = _recipeContext.Groups.OrderBy(g => g.Name)
+//                .Select(g => new GroupSummaryModel
+//                {
+//                    Id = g.Id,
+//                    Name = g.Name,
+//                    Description = g.Description,
+//                    NumberOfUsers = g.Users.Count(),
+//                    NumberOfNewRecipes = g.Recipes.Count(r => r.PostedOn > twoDaysAgo)
+//                }).Skip(pageSize * pageNumber)
+//                .Take(pageSize);
+//
+//            return View(groupSummaries);
+
+
 
             var collectionBeforePaging =
                 _context.Authors.ApplySort(authorsResourceParameters.OrderBy,
@@ -102,9 +132,12 @@ namespace Conduit.Business.Services
                     || a.LastName.ToLowerInvariant().Contains(searchQueryForWhereClause));
             }
 
-            return PagedList<Author>.Create(collectionBeforePaging,
+//            return PagedList<Author>.Create(collectionBeforePaging,
+//                authorsResourceParameters.PageNumber,
+//                authorsResourceParameters.PageSize);               
+              return await PagedList<Author>.CreateAsync(collectionBeforePaging,
                 authorsResourceParameters.PageNumber,
-                authorsResourceParameters.PageSize);               
+                authorsResourceParameters.PageSize);   
         }
 
         public IEnumerable<Author> GetAuthors(IEnumerable<Guid> authorIds)
